@@ -5,7 +5,8 @@ from scenes.TitleScene import TitleScene
 #Starting up pygame module
 pygame.init()
 
-#Game state dictionary allows current game information to be stored in one variable so it can easily be passed on as a parameter for game objects
+#Game state dictionary allows all current game information to be stored in one variable
+#This means it can easily be passed on as a parameter for game objects
 game_state = {}
 
 game_state["width"] = 960
