@@ -1,24 +1,27 @@
+import pygame
 from scenes.Scene import Scene
 from scenes.TitleScene import TitleScene
 
 #Starting up pygame module
-import pygame
-
 pygame.init()
 
-#Using pygame to set parameters for the game window
-GAME_WIDTH = 960
-GAME_HEIGHT = 720
+#Game state dictionary allows current game information to be stored in one variable so it can easily be passed on as a parameter for game objects
+game_state = {}
 
-gameDisplay = pygame.display.set_mode((GAME_WIDTH, GAME_HEIGHT)) #Window width and height
-pygame.display.set_caption('Battle Lines') #Window title
+game_state["width"] = 960
+game_state["height"] = 720
+
+#Using pygame to set parameters for the game window
+game_state["display"] = pygame.display.set_mode((game_state["width"], game_state["height"])) #Window width and height
+pygame.display.set_caption('TD Game') #Window title
 
 #Setting up an in game clock
 clock = pygame.time.Clock()
 
-title_scene = TitleScene()
+#Starts up the title scene
+title_scene = TitleScene(game_state).show()
 
-#While loop to update the game state that stops if the user quits the game
+#While loop to update the game rapidly that stops if the user quits the game
 crashed = False
 
 while not crashed:
