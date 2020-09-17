@@ -1,6 +1,7 @@
 import pygame
 from scenes.Scene import Scene
 from scenes.TitleScene import TitleScene
+from scenes.Level import Level
 
 #Starting up pygame module
 pygame.init()
@@ -9,31 +10,20 @@ pygame.init()
 #This means it can easily be passed on as a parameter for game objects
 game_state = {}
 
-game_state["width"] = 960
-game_state["height"] = 720
+game_state["width"] = 1280
+game_state["height"] = 960
 
 #Using pygame to set parameters for the game window
 game_state["display"] = pygame.display.set_mode((game_state["width"], game_state["height"])) #Window width and height
-pygame.display.set_caption('TD Game') #Window title
+pygame.display.set_caption("Confrontation") #Window title
 
 #Setting up an in game clock
-clock = pygame.time.Clock()
+game_state["clock"] = pygame.time.Clock()
 
 #Starts up the title scene
-title_scene = TitleScene(game_state).show()
+#title_scene = TitleScene(game_state).show()
 
-#While loop to update the game rapidly that stops if the user quits the game
-crashed = False
-
-while not crashed:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            crashed = True
-        
-        #print(event)
-
-    pygame.display.update()
-    clock.tick(30)
+level1 = Level(game_state, 0).show()
 
 #Shuts down pygame and current program when while loop ends
 pygame.quit()
