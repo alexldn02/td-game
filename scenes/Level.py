@@ -7,10 +7,16 @@ class Level(Scene):
 
         #Loading up assets needed in scene
         self.bg = pygame.image.load("./assets/levelbg.png")
+
         self.tile = pygame.image.load("./assets/tile.png")
-        self.tile_wall = pygame.image.load("./assets/tilewall.png")
         self.tile_hovered = pygame.image.load("./assets/tilehovered.png")
-        self.tile_wall_hovered = pygame.image.load("./assets/tilewallhovered.png")
+        self.wall = pygame.image.load("./assets/wall.png")
+        self.wall_hovered = pygame.image.load("./assets/wallhovered.png")
+        self.start = pygame.image.load("./assets/start.png")
+        self.start_hovered = pygame.image.load("./assets/starthovered.png")
+        self.end = pygame.image.load("./assets/end.png")
+        self.end_hovered = pygame.image.load("./assets/endhovered.png")
+
         self.tower_basic = pygame.image.load("./assets/towerbasic.png")
         self.tower_basic_hovered = pygame.image.load("./assets/towerbasichovered.png")
         self.tower_splash = pygame.image.load("./assets/towersplash.png")
@@ -28,15 +34,20 @@ class Level(Scene):
                 self.grid[a].append([])
 
                 #Tiles are given the wall type if they are defined as walls in level_data
-                if level_data["walls"][b][a] == 1:
-                    self.grid[a][b] = {
-                        "type": "wall",
-                        "level": -1
-                    }
+                if level_data["tiles"][b][a] == 1:
+                    tiletype = "wall"
+                #Or start type if they are defined as the start tile
+                elif level_data["tiles"][b][a] == "start":
+                    tiletype = "start"
+                #Or end type if they are defined as the end tile
+                elif level_data["tiles"][b][a] == "end":
+                    tiletype = "end"
                 #Otherwise they are given the empty type
                 else:
-                    self.grid[a][b] = {
-                        "type": "empty",
+                    tiletype = "empty"
+
+                self.grid[a][b] = {
+                        "type": tiletype,
                         "level": -1
                     }
 
@@ -79,8 +90,11 @@ class Level(Scene):
                     if x_tile != -1 and y_tile != -1:
                         #On tile that mouse is over the hovered version of the sprite is blitted
                         if self.grid[x_tile][y_tile]["type"] == "wall":
-                            self.game_state["display"].blit(self.tile_wall_hovered, (x_tile*50 + 435, y_tile*50 + 115))
-
+                            self.game_state["display"].blit(self.wall_hovered, (x_tile*50 + 435, y_tile*50 + 115))
+                        elif self.grid[x_tile][y_tile]["type"] == "start":
+                            self.game_state["display"].blit(self.start_hovered, (x_tile*50 + 435, y_tile*50 + 115))
+                        elif self.grid[x_tile][y_tile]["type"] == "end":
+                            self.game_state["display"].blit(self.end_hovered, (x_tile*50 + 435, y_tile*50 + 115))
                         elif self.grid[x_tile][y_tile]["type"] == "towerbasic":
                             self.game_state["display"].blit(self.tower_basic_hovered, (x_tile*50 + 435, y_tile*50 + 115))
                         elif self.grid[x_tile][y_tile]["type"] == "towersplash":
@@ -99,7 +113,11 @@ class Level(Scene):
                             if not (a == x_tile and b == y_tile):
                                 #On all tiles that are not hovered over regular sprites are blitted
                                 if self.grid[a][b]["type"] == "wall":
-                                    self.game_state["display"].blit(self.tile_wall, (a*50 + 435, b*50 + 115))
+                                    self.game_state["display"].blit(self.wall, (a*50 + 435, b*50 + 115))
+                                elif self.grid[a][b]["type"] == "start":
+                                    self.game_state["display"].blit(self.start, (a*50 + 435, b*50 + 115))
+                                elif self.grid[a][b]["type"] == "end":
+                                    self.game_state["display"].blit(self.end, (a*50 + 435, b*50 + 115))
 
                                 elif self.grid[a][b]["type"] == "towerbasic":
                                     self.game_state["display"].blit(self.tower_basic, (a*50 + 435, b*50 + 115))
