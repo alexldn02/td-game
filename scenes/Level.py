@@ -5,8 +5,6 @@ class Level(Scene):
     def __init__(self, game_state, level_data):
         Scene.__init__(self, game_state)
 
-        self.level_data = level_data
-
         #Loading up assets needed in scene
         self.bg = pygame.image.load("./assets/levelbg.png")
         self.tile = pygame.image.load("./assets/tile.png")
@@ -30,30 +28,38 @@ class Level(Scene):
                 self.grid[a].append([])
 
                 #Tiles are given the wall type if they are defined as walls in level_data
-                if self.level_data["walls"][b][a] == 1:
+                if level_data["walls"][b][a] == 1:
                     self.grid[a][b] = {
                         "type": "wall",
+                        "level": -1
                     }
                 #Otherwise they are given the empty type
                 else:
                     self.grid[a][b] = {
                         "type": "empty",
+                        "level": -1
                     }
+
+        #Money value is set to whatever it is defined as for the particular level
+        self.money = level_data["startmoney"]
 
     
     def show(self):
         #Level background image is blitted to the scene first thing
         self.game_state["display"].blit(self.bg, (0, 0))
 
-        #While loop to update the game rapidly that stops if the user quits the game
-        crashed = False
+        #Stores which option on the left of the grid has been selected, defaults to "none"
+        self.selected = "none"
 
-        while not crashed:
+        #While loop to update the game rapidly that stops if the user quits the game
+        exit_window = False
+
+        while not exit_window:
             for event in pygame.event.get():
 
                 if event.type == pygame.QUIT:
                     #Causes loop to stop
-                    crashed = True
+                    exit_window = True
 
                 if event.type == pygame.MOUSEMOTION:
                     #Every time the mouse is moved its position is tracked
@@ -68,16 +74,21 @@ class Level(Scene):
                         #Position is stored as -1 if mouse is not over the grid
                         x_tile = -1
                         y_tile = -1
-                    print(x_tile, y_tile)
                     
                     #If mouse is in grid
-                    if not (x_tile == -1 or y_tile == -1):
+                    if x_tile != -1 and y_tile != -1:
                         #On tile that mouse is over the hovered version of the sprite is blitted
                         if self.grid[x_tile][y_tile]["type"] == "wall":
                             self.game_state["display"].blit(self.tile_wall_hovered, (x_tile*50 + 435, y_tile*50 + 115))
 
                         elif self.grid[x_tile][y_tile]["type"] == "towerbasic":
                             self.game_state["display"].blit(self.tower_basic_hovered, (x_tile*50 + 435, y_tile*50 + 115))
+                        elif self.grid[x_tile][y_tile]["type"] == "towersplash":
+                            self.game_state["display"].blit(self.tower_splash_hovered, (x_tile*50 + 435, y_tile*50 + 115))
+                        elif self.grid[x_tile][y_tile]["type"] == "towersniper":
+                            self.game_state["display"].blit(self.tower_sniper_hovered, (x_tile*50 + 435, y_tile*50 + 115))
+                        elif self.grid[x_tile][y_tile]["type"] == "towerincendiary":
+                            self.game_state["display"].blit(self.tower_incendiary_hovered, (x_tile*50 + 435, y_tile*50 + 115))
 
                         else:
                             self.game_state["display"].blit(self.tile_hovered, (x_tile*50 + 435, y_tile*50 + 115))
@@ -92,18 +103,38 @@ class Level(Scene):
 
                                 elif self.grid[a][b]["type"] == "towerbasic":
                                     self.game_state["display"].blit(self.tower_basic, (a*50 + 435, b*50 + 115))
+                                elif self.grid[a][b]["type"] == "towersplash":
+                                    self.game_state["display"].blit(self.tower_splash, (a*50 + 435, b*50 + 115))
+                                elif self.grid[a][b]["type"] == "towersniper":
+                                    self.game_state["display"].blit(self.tower_sniper, (a*50 + 435, b*50 + 115))
+                                elif self.grid[a][b]["type"] == "towerincendiary":
+                                    self.game_state["display"].blit(self.tower_incendiary, (a*50 + 435, b*50 + 115))
                                     
                                 else:
                                     self.game_state["display"].blit(self.tile, (a*50 + 435, b*50 + 115))
 
                 if event.type == pygame.MOUSEBUTTONUP:
                     #If mouse clicks and is within grid
-                    if not (x_tile == -1 or y_tile == -1):
+                    if x_tile != -1 and y_tile != -1:
                         #If tile mouse is over is not taken up by wall or tower
                         if self.grid[x_tile][y_tile]["type"] == "empty":
-                            #Tile becomes tower
-                            self.grid[x_tile][y_tile]["type"] = "towerbasic"
-                            self.game_state["display"].blit(self.tower_basic_hovered, (x_tile*50 + 435, y_tile*50 + 115))
+                            #Depending on which button is selected, specified tower is created
+                            if self.selected == "createbasic":
+                                #Tile becomes basic tower
+                                self.grid[x_tile][y_tile]["type"] = "towerbasic"
+                                self.game_state["display"].blit(self.tower_basic_hovered, (x_tile*50 + 435, y_tile*50 + 115))
+                            elif self.selected == "createsplash":
+                                #Tile becomes splash tower
+                                self.grid[x_tile][y_tile]["type"] = "towersplash"
+                                self.game_state["display"].blit(self.tower_splash_hovered, (x_tile*50 + 435, y_tile*50 + 115))
+                            elif self.selected == "createsniper":
+                                #Tile becomes sniper tower
+                                self.grid[x_tile][y_tile]["type"] = "towersniper"
+                                self.game_state["display"].blit(self.tower_sniper_hovered, (x_tile*50 + 435, y_tile*50 + 115))
+                            elif self.selected == "createincendiary":
+                                #Tile becomes incendiary tower
+                                self.grid[x_tile][y_tile]["type"] = "towerincendiary"
+                                self.game_state["display"].blit(self.tower_incendiary_hovered, (x_tile*50 + 435, y_tile*50 + 115))
 
             pygame.display.update()
             self.game_state["clock"].tick(60)
