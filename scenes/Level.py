@@ -13,9 +13,17 @@ class Level(Scene):
         self.back_btn = pygame.image.load("./assets/backbtn.png")
         self.back_btn_hovered = pygame.image.load("./assets/backbtnhovered.png")
         self.create_basic_btn = pygame.image.load("./assets/createbasicbtn.png")
+        self.create_basic_btn_hovered = pygame.image.load("./assets/createbasicbtnhovered.png")
+        self.create_basic_btn_selected = pygame.image.load("./assets/createbasicbtnselected.png")
         self.create_splash_btn = pygame.image.load("./assets/createsplashbtn.png")
+        self.create_splash_btn_hovered = pygame.image.load("./assets/createsplashbtnhovered.png")
+        self.create_splash_btn_selected = pygame.image.load("./assets/createsplashbtnselected.png")
         self.create_sniper_btn = pygame.image.load("./assets/createsniperbtn.png")
+        self.create_sniper_btn_hovered = pygame.image.load("./assets/createsniperbtnhovered.png")
+        self.create_sniper_btn_selected = pygame.image.load("./assets/createsniperbtnselected.png")
         self.create_incendiary_btn = pygame.image.load("./assets/createincendiarybtn.png")
+        self.create_incendiary_btn_hovered = pygame.image.load("./assets/createincendiarybtnhovered.png")
+        self.create_incendiary_btn_selected = pygame.image.load("./assets/createincendiarybtnselected.png")
 
         self.tile = pygame.image.load("./assets/tile.png")
         self.tile_hovered = pygame.image.load("./assets/tilehovered.png")
@@ -69,6 +77,13 @@ class Level(Scene):
     def show(self):
         #Level background image is blitted to the scene first thing
         self.game_state["display"].blit(self.bg, (0, 0))
+
+        self.game_state["display"].blit(self.create_basic_btn, (35, 115))
+        self.game_state["display"].blit(self.create_splash_btn, (35, 245))
+        self.game_state["display"].blit(self.create_sniper_btn, (35, 375))
+        self.game_state["display"].blit(self.create_incendiary_btn, (35, 505))
+
+        self.game_state["display"].blit(self.back_btn, (1105, 10))
 
         #Stores which option on the left of the grid has been selected, defaults to "none"
         self.selected = "none"
@@ -144,13 +159,7 @@ class Level(Scene):
                             self.game_state["display"].blit(self.tower_incendiary, (a*50 + 435, b*50 + 115))
                         else:
                             self.game_state["display"].blit(self.tile, (a*50 + 435, b*50 + 115))
-
-            self.game_state["display"].blit(self.back_btn, (1105, 10))
-            self.game_state["display"].blit(self.create_basic_btn, (35, 115))
-            self.game_state["display"].blit(self.create_splash_btn, (35, 245))
-            self.game_state["display"].blit(self.create_sniper_btn, (35, 375))
-            self.game_state["display"].blit(self.create_incendiary_btn, (35, 505))  
-
+ 
         if self.event.type == pygame.MOUSEBUTTONUP:
             #If mouse clicks and is within grid
             if self.tile_x != -1 and self.tile_y != -1:
@@ -184,16 +193,32 @@ class Level(Scene):
                 if self.mouse_pos[0] >= 35 and self.mouse_pos[0] < 345 and self.mouse_pos[1] >= 115 and self.mouse_pos[1] < 225:
                     #Mouse has clicked on create basic button and it is now selected
                     self.selected = "createbasic"
+                    self.game_state["display"].blit(self.create_basic_btn_selected, (35, 115))
+                    
                 #Over create splash button    
                 elif self.mouse_pos[0] >= 35 and self.mouse_pos[0] < 345 and self.mouse_pos[1] >= 245 and self.mouse_pos[1] < 355:
                     self.selected = "createsplash"
+                    self.game_state["display"].blit(self.create_splash_btn_selected, (35, 245))
+
                 #Over create sniper button    
                 elif self.mouse_pos[0] >= 35 and self.mouse_pos[0] < 345 and self.mouse_pos[1] >= 375 and self.mouse_pos[1] < 485:
                     self.selected = "createsniper"
+                    self.game_state["display"].blit(self.create_sniper_btn_selected, (35, 375))
+
                 #Over create incendiary button    
                 elif self.mouse_pos[0] >= 35 and self.mouse_pos[0] < 345 and self.mouse_pos[1] >= 505 and self.mouse_pos[1] < 615:
                     self.selected = "createincendiary"
+                    self.game_state["display"].blit(self.create_incendiary_btn_selected, (35, 505))
+
+            if self.selected != "createbasic":
+                self.game_state["display"].blit(self.create_basic_btn, (35, 115))
+            if self.selected != "createsplash":
+                self.game_state["display"].blit(self.create_splash_btn, (35, 245))
+            if self.selected != "createsniper":
+                self.game_state["display"].blit(self.create_sniper_btn, (35, 375))
+            if self.selected != "createincendiary":
+                self.game_state["display"].blit(self.create_incendiary_btn, (35, 505)) 
 
 
-    def getLevelData(self):
-        return self.level_data
+    def find_path(self):
+        return
