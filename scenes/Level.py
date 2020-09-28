@@ -45,8 +45,6 @@ class Level(Scene):
         #Level background image is blitted to the scene first thing
         self.game_state["display"].blit(self.bg, (0, 0))
 
-        mouse = pygame.mouse.get_pos()
-
         #While loop to update the game rapidly that stops if the user quits the game
         crashed = False
 
@@ -105,6 +103,7 @@ class Level(Scene):
                         if self.grid[x_tile][y_tile]["type"] == "empty":
                             #Tile becomes tower
                             self.grid[x_tile][y_tile]["type"] = "towerbasic"
+                            self.game_state["display"].blit(self.tower_basic_hovered, (x_tile*50 + 435, y_tile*50 + 115))
 
             pygame.display.update()
             self.game_state["clock"].tick(60)
