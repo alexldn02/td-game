@@ -1,7 +1,7 @@
 import pygame
-from scenes.Scene import Scene
-from scenes.TitleScene import TitleScene
-from scenes.Level import Level
+from classes.Scene import Scene
+from classes.TitleScene import TitleScene
+from classes.Level import Level
 
 #Starting up pygame module
 pygame.init()
@@ -46,9 +46,9 @@ pygame.display.set_caption("Confrontation")
 game_state["clock"] = pygame.time.Clock()
 
 #Starts up the title scene
-#title_scene = TitleScene(game_state).show()
+#title_scene = TitleScene(game_state).start()
 
-level1 = Level(game_state, level_data[0]).show()
+level1 = Level(game_state, level_data[0]).start()
 
 #Shuts down pygame and current program when while loop in Scene ends
 pygame.quit()
