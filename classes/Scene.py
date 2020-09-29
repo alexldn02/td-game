@@ -27,6 +27,5 @@ class Scene:
             pygame.display.update()
             self.game_state["clock"].tick(60)
 
-
     def do_events(self):
         return

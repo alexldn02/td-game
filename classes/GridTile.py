@@ -6,9 +6,19 @@ class GridTile:
         self.game_state = game_state
 
         self.type = type
+        self.set_sprite()
 
         self.pos = pos
 
+
+    def get_type(self):
+        return self.type
+
+    def set_type(self, type):
+        self.type = type
+        self.set_sprite()
+
+    def set_sprite(self):
         if self.type == "empty":
             self.sprite = pygame.image.load("./assets/tile.png")
             self.sprite_hovered = pygame.image.load("./assets/tilehovered.png")
@@ -33,9 +43,6 @@ class GridTile:
         elif self.type == "towerincendiary":
             self.sprite = pygame.image.load("./assets/towerincendiary.png")
             self.sprite_hovered = pygame.image.load("./assets/towerincendiaryhovered.png")
-
-    def get_type(self):
-        return self.type
 
     def get_pos(self):
         return self.pos
