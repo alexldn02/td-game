@@ -15,9 +15,6 @@ class Level(Scene):
         #Loading up assets needed in scene
         self.bg = pygame.image.load("./assets/levelbg.png")
 
-        self.back_btn = pygame.image.load("./assets/backbtn.png")
-        self.back_btn_hovered = pygame.image.load("./assets/backbtnhovered.png")
-
 
     def start(self):
         #Grid is represented as a 2D array, tiles are represented as objects within array
@@ -44,18 +41,21 @@ class Level(Scene):
 
                 self.grid[a].append(tile)
 
+        #Live enemies are also represented in an array, each enemy being an object
+        self.enemies = []
+
+        #Waves are taken from level_data
+        self.waves = self.level_data["waves"]
+
         #Money value is set to whatever it is defined as for the particular level
         self.money = self.level_data["startmoney"]
 
-        #Level background image is blitted to the scene first thing
-        self.game_state["display"].blit(self.bg, (0, 0))
-
+        #Buttons are instantiated
+        self.back_btn = Button(self.game_state, "back")
         self.create_basic_btn = Button(self.game_state, "createbasic")
         self.create_splash_btn = Button(self.game_state, "createsplash")
         self.create_sniper_btn = Button(self.game_state, "createsniper")
         self.create_incendiary_btn = Button(self.game_state, "createincendiary")
-
-        self.game_state["display"].blit(self.back_btn, (1105, 10))
 
         #Stores which option on the left of the grid has been selected, defaults to "none"
         self.selected = "none"
@@ -65,6 +65,9 @@ class Level(Scene):
 
         #Stores the x and y of the tile that the mouse is over, or -1 if mouse is not over the grid
         self.mouse_tile = [-1, -1]
+        
+        #Level background image is blitted to the scene
+        self.game_state["display"].blit(self.bg, (0, 0))
 
         #Starts loop from method found in parent Scene class
         self.do_loop()
@@ -87,7 +90,6 @@ class Level(Scene):
                 #Position is stored as -1 if mouse is not over the grid
                 self.mouse_tile = [-1, -1]
 
-            
  
         if self.event.type == pygame.MOUSEBUTTONUP:
 
@@ -97,27 +99,24 @@ class Level(Scene):
                 x = self.mouse_tile[0]
                 y = self.mouse_tile[1]
 
-                #If tile mouse is over is not taken up by wall or tower
+                #If tile clicked is not taken up by wall or tower
                 if self.grid[x][y].get_type() == "empty":
                     #Depending on which button is selected, specified tower is created
                     if self.selected == "createbasic":
-                        #Tile becomes basic tower
                         self.grid[x][y].set_type("towerbasic")
                         self.selected = "none"
                     elif self.selected == "createsplash":
-                        #Tile becomes splash tower
                         self.grid[x][y].set_type("towersplash")
                         self.selected = "none"
                     elif self.selected == "createsniper":
-                        #Tile becomes sniper tower
                         self.grid[x][y].set_type("towersniper")
                         self.selected = "none"
                     elif self.selected == "createincendiary":
-                        #Tile becomes incendiary tower
                         self.grid[x][y].set_type("towerincendiary")
                         self.selected = "none"
 
             else:
+                #If mouse clicks and is within bounds of a button it is selected
                 if self.create_basic_btn.within_bounds(self.mouse_pos):
                     if self.selected == "createbasic":
                         self.selected = "none"
@@ -139,14 +138,21 @@ class Level(Scene):
                     else:
                         self.selected = "createincendiary"
 
+        #After events are handled, all sprites are updated
+        
+        #Back button is updated
+        self.back_btn.update(self.mouse_pos)
+
+        #Tower create buttons are updated
         self.create_basic_btn.update(self.mouse_pos, self.selected)
         self.create_splash_btn.update(self.mouse_pos, self.selected)
         self.create_sniper_btn.update(self.mouse_pos, self.selected)
         self.create_incendiary_btn.update(self.mouse_pos, self.selected)
-
-        for tile_x in self.grid:
-            for tile_y in tile_x:
-                tile_y.update(self.mouse_tile)
+        
+        #Every tile in the grid is updated
+        for tile_y in self.grid:
+            for tile_x in tile_y:
+                tile_x.update(self.mouse_tile)
 
 
     def find_path(self):

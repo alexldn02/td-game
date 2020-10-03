@@ -1,4 +1,5 @@
 import pygame
+import datetime
 
 #Generic Scene class, all game scenes will be children of this class
 class Scene:
@@ -26,6 +27,8 @@ class Scene:
             #Updates the game at 60fps
             pygame.display.update()
             self.game_state["clock"].tick(60)
+            print(datetime.datetime.now().time())
+            #print(self.game_state["clock"])
 
     def do_events(self):
         return

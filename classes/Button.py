@@ -7,7 +7,13 @@ class Button:
 
         self.type = type
 
-        if self.type == "createbasic":
+        #Bounds and sprites are set depending on what type of button is instantiated
+        if self.type == "back":
+            self.bounds = [[1105, 1270], [10, 60]]
+            self.sprite = pygame.image.load("./assets/backbtn.png")
+            self.sprite_hovered = pygame.image.load("./assets/backbtnhovered.png")
+
+        elif self.type == "createbasic":
             self.bounds = [[35, 345], [115, 225]]
             self.sprite = pygame.image.load("./assets/createbasicbtn.png")
             self.sprite_hovered = pygame.image.load("./assets/createbasicbtnhovered.png")
@@ -37,13 +43,15 @@ class Button:
 
 
     def within_bounds(self, mouse_pos):
+        #Returns true if mouse is over button
         if mouse_pos[0] >= self.bounds[0][0] and mouse_pos[0] < self.bounds[0][1] and mouse_pos[1] >= self.bounds[1][0] and mouse_pos[1] < self.bounds[1][1]:
             return True
         else:
             return False
 
 
-    def update(self, mouse_pos, selected):
+    def update(self, mouse_pos, selected = False):
+        #Blits sprite depending on whether button is selected or hovered over
         if selected == self.type:
             self.game_state["display"].blit(self.sprite_selected, (self.bounds[0][0], self.bounds[1][0]))
         elif self.within_bounds(mouse_pos):
