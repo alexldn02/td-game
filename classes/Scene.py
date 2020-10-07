@@ -24,11 +24,16 @@ class Scene:
                 #Performs event checks found in child classes
                 self.do_events()
 
+            self.do_updates()
+
             #Updates the game at 60fps
             pygame.display.update()
             self.game_state["clock"].tick(60)
-            print(datetime.datetime.now().time())
+            #print(datetime.datetime.now().time())
             #print(self.game_state["clock"])
 
     def do_events(self):
+        return
+
+    def do_updates(self):
         return

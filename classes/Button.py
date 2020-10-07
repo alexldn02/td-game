@@ -37,10 +37,27 @@ class Button:
             self.sprite_hovered = pygame.image.load("./assets/createincendiarybtnhovered.png")
             self.sprite_selected = pygame.image.load("./assets/createincendiarybtnselected.png")
 
+        elif self.type == "nextwavelight":
+            self.bounds = [[35, 345], [775, 925]]
+            self.sprite = pygame.image.load("./assets/nextwavelightbtn.png")
+            self.sprite_hovered = pygame.image.load("./assets/nextwavelightbtnhovered.png")
+
+        elif self.type == "nextwavemedium":
+            self.bounds = [[35, 345], [775, 925]]
+            self.sprite = pygame.image.load("./assets/nextwavemediumbtn.png")
+            self.sprite_hovered = pygame.image.load("./assets/nextwavemediumbtnhovered.png")
+
+        elif self.type == "nextwaveheavy":
+            self.bounds = [[35, 345], [775, 925]]
+            self.sprite = pygame.image.load("./assets/nextwaveheavybtn.png")
+            self.sprite_hovered = pygame.image.load("./assets/nextwaveheavybtnhovered.png")
+
 
     def get_type(self):
         return self.type
-
+    
+    def set_type(self, type):
+        self.type = type
 
     def within_bounds(self, mouse_pos):
         #Returns true if mouse is over button
@@ -50,7 +67,7 @@ class Button:
             return False
 
 
-    def update(self, mouse_pos, selected = False):
+    def update(self, mouse_pos, selected = ""):
         #Blits sprite depending on whether button is selected or hovered over
         if selected == self.type:
             self.game_state["display"].blit(self.sprite_selected, (self.bounds[0][0], self.bounds[1][0]))

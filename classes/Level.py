@@ -8,7 +8,7 @@ from .Button import Button
 class Level(Scene):
 
     def __init__(self, game_state, level_data):
-        Scene.__init__(self, game_state)
+        super().__init__(game_state)
 
         self.level_data = level_data
 
@@ -30,9 +30,11 @@ class Level(Scene):
                 #Or start type if they are defined as the start tile
                 elif self.level_data["tiles"][b][a] == "start":
                     tile_type = "start"
+                    self.start_tile = [a, b]
                 #Or end type if they are defined as the end tile
                 elif self.level_data["tiles"][b][a] == "end":
                     tile_type = "end"
+                    self.end_tile = [a, b]
                 #Otherwise they are given the empty type
                 else:
                     tile_type = "empty"
@@ -41,8 +43,10 @@ class Level(Scene):
 
                 self.grid[a].append(tile)
 
-        #Live enemies are also represented in an array, each enemy being an object
+        #Active enemies are also represented in an array, each enemy being an object
         self.enemies = []
+
+        self.enemies.append(Enemy(self.game_state, 'light', self.start_tile, self.end_tile))
 
         #Waves are taken from level_data
         self.waves = self.level_data["waves"]
@@ -56,6 +60,7 @@ class Level(Scene):
         self.create_splash_btn = Button(self.game_state, "createsplash")
         self.create_sniper_btn = Button(self.game_state, "createsniper")
         self.create_incendiary_btn = Button(self.game_state, "createincendiary")
+        self.next_wave_btn = Button(self.game_state, "nextwavelight")
 
         #Stores which option on the left of the grid has been selected, defaults to "none"
         self.selected = "none"
@@ -105,12 +110,15 @@ class Level(Scene):
                     if self.selected == "createbasic":
                         self.grid[x][y].set_type("towerbasic")
                         self.selected = "none"
+
                     elif self.selected == "createsplash":
                         self.grid[x][y].set_type("towersplash")
                         self.selected = "none"
+
                     elif self.selected == "createsniper":
                         self.grid[x][y].set_type("towersniper")
                         self.selected = "none"
+                        
                     elif self.selected == "createincendiary":
                         self.grid[x][y].set_type("towerincendiary")
                         self.selected = "none"
@@ -122,22 +130,29 @@ class Level(Scene):
                         self.selected = "none"
                     else:
                         self.selected = "createbasic"
+
                 elif self.create_splash_btn.within_bounds(self.mouse_pos):
                     if self.selected == "createsplash":
                         self.selected = "none"
                     else:
                         self.selected = "createsplash"
+
                 elif self.create_sniper_btn.within_bounds(self.mouse_pos):
                     if self.selected == "createsniper":
                         self.selected = "none"
                     else:
                         self.selected = "createsniper"
+
                 elif self.create_incendiary_btn.within_bounds(self.mouse_pos):
                     if self.selected == "createincendiary":
                         self.selected = "none"
                     else:
                         self.selected = "createincendiary"
 
+                elif self.next_wave_btn.within_bounds(self.mouse_pos):
+                    self.enemies[0].move_to([3, 4])
+
+    def do_updates(self):
         #After events are handled, all sprites are updated
         
         #Back button is updated
@@ -148,12 +163,22 @@ class Level(Scene):
         self.create_splash_btn.update(self.mouse_pos, self.selected)
         self.create_sniper_btn.update(self.mouse_pos, self.selected)
         self.create_incendiary_btn.update(self.mouse_pos, self.selected)
+
+        #Next wave button is updated
+        self.next_wave_btn.update(self.mouse_pos)
         
         #Every tile in the grid is updated
         for tile_y in self.grid:
             for tile_x in tile_y:
                 tile_x.update(self.mouse_tile)
 
+        #Enemies are updated
+        for enemy in self.enemies:
+            enemy.update()
+
 
     def find_path(self):
+        #Shortest path algorithm
+
+        
         return
