@@ -2,8 +2,8 @@ import pygame
 
 class GridTile:
 
-    def __init__(self, game_state, type, pos):
-        self.game_state = game_state
+    def __init__(self, game, type, pos):
+        self.game = game
 
         self.type = type
         self.set_sprite()
@@ -51,7 +51,7 @@ class GridTile:
     def update(self, mouse_tile):
         #Blits sprite depending on whether tile is hovered over
         if mouse_tile == self.pos:
-                self.game_state["display"].blit(self.sprite_hovered, (self.pos[0]*50 + 435, self.pos[1]*50 + 115))
+                self.game["display"].blit(self.sprite_hovered, (self.pos[0]*50 + 435, self.pos[1]*50 + 115))
         else:
-            self.game_state["display"].blit(self.sprite, (self.pos[0]*50 + 435, self.pos[1]*50 + 115))
+            self.game["display"].blit(self.sprite, (self.pos[0]*50 + 435, self.pos[1]*50 + 115))
 

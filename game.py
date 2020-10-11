@@ -6,9 +6,9 @@ from classes.Level import Level
 #Starting up pygame module
 pygame.init()
 
-#Game state dictionary allows all current game information to be stored in one variable
+#Game dictionary allows game display and clock to be stored in one variable
 #This means it can easily be passed on as a parameter for game objects
-game_state = {}
+game = {}
 
 #This array contains data about how each level is defined
 level_data = [{
@@ -17,7 +17,7 @@ level_data = [{
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
             [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
-            [1, 1, 0, "start", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
+            [1, 1, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
             [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
             [1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
             [1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
@@ -26,29 +26,30 @@ level_data = [{
             [1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
             [1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1],
             [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
-            [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "end", 0, 1, 1],
+            [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 1, 1],
             [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
         ],
-        "waves":[]
+        "waves":[{"type": "light", "count": 5}, {"type": "light", "count": 10}, {"type": "medium", "count": 5}, {"type": "end", "count": 0}]
         }]
 
 #Width and height of game window
-game_state["width"] = 1280
-game_state["height"] = 960
+game_width = 1280
+game_height = 960
 
 #Using pygame to set width, height and caption for game window
-game_state["display"] = pygame.display.set_mode((game_state["width"], game_state["height"]))
+game["display"] = pygame.display.set_mode((game_width, game_height))
 pygame.display.set_caption("Confrontation")
 
 #Setting up an in game clock
-game_state["clock"] = pygame.time.Clock()
+game["clock"] = pygame.time.Clock()
 
 #Starts up the title scene
-#title_scene = TitleScene(game_state).start()
+#title_scene = TitleScene(game).start()
 
-level1 = Level(game_state, level_data[0]).start()
+level1 = Level(game, level_data[0])
+level1.start()
 
 #Shuts down pygame and current program when while loop in Scene ends
 pygame.quit()

@@ -1,4 +1,5 @@
 import pygame
+from queue import Queue
 from .Scene import Scene
 from .GridTile import GridTile
 from .Enemy import Enemy
@@ -7,13 +8,15 @@ from .Button import Button
 #Level class that inherits Scene where most of the games code will be
 class Level(Scene):
 
-    def __init__(self, game_state, level_data):
-        super().__init__(game_state)
+    def __init__(self, game, level_data):
+        super().__init__(game)
 
         self.level_data = level_data
 
         #Loading up assets needed in scene
         self.bg = pygame.image.load("./assets/levelbg.png")
+
+        self.font = pygame.font.Font("./assets/font.ttf", 24)
 
 
     def start(self):
@@ -28,39 +31,48 @@ class Level(Scene):
                 if self.level_data["tiles"][b][a] == 1:
                     tile_type = "wall"
                 #Or start type if they are defined as the start tile
-                elif self.level_data["tiles"][b][a] == "start":
+                elif self.level_data["tiles"][b][a] == 2:
                     tile_type = "start"
                     self.start_tile = [a, b]
                 #Or end type if they are defined as the end tile
-                elif self.level_data["tiles"][b][a] == "end":
+                elif self.level_data["tiles"][b][a] == 3:
                     tile_type = "end"
                     self.end_tile = [a, b]
                 #Otherwise they are given the empty type
                 else:
                     tile_type = "empty"
 
-                tile = GridTile(self.game_state, tile_type, [a, b])
+                tile = GridTile(self.game, tile_type, [a, b])
 
                 self.grid[a].append(tile)
 
         #Active enemies are also represented in an array, each enemy being an object
         self.enemies = []
 
-        self.enemies.append(Enemy(self.game_state, 'light', self.start_tile, self.end_tile))
-
         #Waves are taken from level_data
-        self.waves = self.level_data["waves"]
+        wave_data = self.level_data["waves"]
+        
+        self.waves = Queue()
+        
+        for wave in wave_data:
+            self.waves.put(wave)
+
+        self.current_wave = {}
+        self.next_wave = self.waves.get()
 
         #Money value is set to whatever it is defined as for the particular level
         self.money = self.level_data["startmoney"]
 
+        #Health is set to max
+        self.health = 100
+
         #Buttons are instantiated
-        self.back_btn = Button(self.game_state, "back")
-        self.create_basic_btn = Button(self.game_state, "createbasic")
-        self.create_splash_btn = Button(self.game_state, "createsplash")
-        self.create_sniper_btn = Button(self.game_state, "createsniper")
-        self.create_incendiary_btn = Button(self.game_state, "createincendiary")
-        self.next_wave_btn = Button(self.game_state, "nextwavelight")
+        self.back_btn = Button(self.game, "back")
+        self.create_basic_btn = Button(self.game, "createbasic")
+        self.create_splash_btn = Button(self.game, "createsplash")
+        self.create_sniper_btn = Button(self.game, "createsniper")
+        self.create_incendiary_btn = Button(self.game, "createincendiary")
+        self.next_wave_btn = Button(self.game, "nextwavelight")
 
         #Stores which option on the left of the grid has been selected, defaults to "none"
         self.selected = "none"
@@ -72,7 +84,7 @@ class Level(Scene):
         self.mouse_tile = [-1, -1]
         
         #Level background image is blitted to the scene
-        self.game_state["display"].blit(self.bg, (0, 0))
+        self.game["display"].blit(self.bg, (0, 0))
 
         #Starts loop from method found in parent Scene class
         self.do_loop()
@@ -110,50 +122,75 @@ class Level(Scene):
                     if self.selected == "createbasic":
                         self.grid[x][y].set_type("towerbasic")
                         self.selected = "none"
+                        self.money -= 100
 
                     elif self.selected == "createsplash":
                         self.grid[x][y].set_type("towersplash")
                         self.selected = "none"
+                        self.money -= 100
 
                     elif self.selected == "createsniper":
                         self.grid[x][y].set_type("towersniper")
                         self.selected = "none"
-                        
+                        self.money -= 100
+
                     elif self.selected == "createincendiary":
                         self.grid[x][y].set_type("towerincendiary")
                         self.selected = "none"
+                        self.money -= 100
 
             else:
-                #If mouse clicks and is within bounds of a button it is selected
-                if self.create_basic_btn.within_bounds(self.mouse_pos):
+                #If mouse clicks within within bounds of a button and has enough money it is selected
+                if self.create_basic_btn.within_bounds(self.mouse_pos) and self.money >= 100:
                     if self.selected == "createbasic":
                         self.selected = "none"
                     else:
                         self.selected = "createbasic"
 
-                elif self.create_splash_btn.within_bounds(self.mouse_pos):
+                elif self.create_splash_btn.within_bounds(self.mouse_pos) and self.money >= 100:
                     if self.selected == "createsplash":
                         self.selected = "none"
                     else:
                         self.selected = "createsplash"
 
-                elif self.create_sniper_btn.within_bounds(self.mouse_pos):
+                elif self.create_sniper_btn.within_bounds(self.mouse_pos) and self.money >= 100:
                     if self.selected == "createsniper":
                         self.selected = "none"
                     else:
                         self.selected = "createsniper"
 
-                elif self.create_incendiary_btn.within_bounds(self.mouse_pos):
+                elif self.create_incendiary_btn.within_bounds(self.mouse_pos) and self.money >= 100:
                     if self.selected == "createincendiary":
                         self.selected = "none"
                     else:
                         self.selected = "createincendiary"
 
-                elif self.next_wave_btn.within_bounds(self.mouse_pos):
-                    self.enemies[0].move_to([3, 4])
+                elif self.next_wave_btn.within_bounds(self.mouse_pos) and not self.waves.empty():
+                    self.current_wave = self.next_wave
+                    self.next_wave = self.waves.get()
+                    self.next_wave_btn.set_type("nextwave" + self.next_wave["type"])
+
+                    for i in range(0, self.current_wave["count"]):
+                        self.enemies.append(Enemy(self.game, self.current_wave["type"], self.start_tile, self.end_tile))
+                    
+                    for enemy in self.enemies:
+                        enemy.move_to(self.end_tile)
+                    if self.health > 10:
+                        self.health -= 10
+                    else:
+                        self.health = 0
 
     def do_updates(self):
         #After events are handled, all sprites are updated
+
+        #Health bar is updated
+        pygame.draw.rect(self.game["display"], (255, 255, 255), (60, 25, 225, 15))
+        pygame.draw.rect(self.game["display"], (197, 9, 9), (60, 25, self.health * 2.25, 15))
+
+        #Money display is updated
+        pygame.draw.rect(self.game["display"], (219, 178, 111), (60, 65, 85, 25))
+        self.money_text = self.font.render(str(self.money), True, (0,0,0))
+        self.game["display"].blit(self.money_text, (64, 67))
         
         #Back button is updated
         self.back_btn.update(self.mouse_pos)
@@ -166,7 +203,7 @@ class Level(Scene):
 
         #Next wave button is updated
         self.next_wave_btn.update(self.mouse_pos)
-        
+
         #Every tile in the grid is updated
         for tile_y in self.grid:
             for tile_x in tile_y:
