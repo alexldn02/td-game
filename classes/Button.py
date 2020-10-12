@@ -60,6 +60,10 @@ class Button:
             self.sprite = pygame.image.load("./assets/nextwaveheavybtn.png")
             self.sprite_hovered = pygame.image.load("./assets/nextwaveheavybtnhovered.png")
 
+        elif self.type == "wavesend":
+            self.bounds = [[35, 345], [775, 925]]
+            self.sprite = pygame.image.load("./assets/nextwaveheavybtnhovered.png")
+            self.sprite_hovered = pygame.image.load("./assets/nextwaveheavybtn.png")
 
     def within_bounds(self, mouse_pos):
         #Returns true if mouse is over button

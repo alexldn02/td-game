@@ -1,5 +1,4 @@
 import pygame
-from queue import Queue
 from .Scene import Scene
 from .GridTile import GridTile
 from .Enemy import Enemy
@@ -33,11 +32,11 @@ class Level(Scene):
                 #Or start type if they are defined as the start tile
                 elif self.level_data["tiles"][b][a] == 2:
                     tile_type = "start"
-                    self.start_tile = [a, b]
+                    self.start_tile = (a, b)
                 #Or end type if they are defined as the end tile
                 elif self.level_data["tiles"][b][a] == 3:
                     tile_type = "end"
-                    self.end_tile = [a, b]
+                    self.end_tile = (a, b)
                 #Otherwise they are given the empty type
                 else:
                     tile_type = "empty"
@@ -50,15 +49,9 @@ class Level(Scene):
         self.enemies = []
 
         #Waves are taken from level_data
-        wave_data = self.level_data["waves"]
-        
-        self.waves = Queue()
-        
-        for wave in wave_data:
-            self.waves.put(wave)
+        self.waves = self.level_data["waves"]
 
-        self.current_wave = {}
-        self.next_wave = self.waves.get()
+        self.wave_no = -1
 
         #Money value is set to whatever it is defined as for the particular level
         self.money = self.level_data["startmoney"]
@@ -72,7 +65,7 @@ class Level(Scene):
         self.create_splash_btn = Button(self.game, "createsplash")
         self.create_sniper_btn = Button(self.game, "createsniper")
         self.create_incendiary_btn = Button(self.game, "createincendiary")
-        self.next_wave_btn = Button(self.game, "nextwavelight")
+        self.next_wave_btn = Button(self.game, "nextwave" + self.waves[0]["type"])
 
         #Stores which option on the left of the grid has been selected, defaults to "none"
         self.selected = "none"
@@ -165,20 +158,9 @@ class Level(Scene):
                     else:
                         self.selected = "createincendiary"
 
-                elif self.next_wave_btn.within_bounds(self.mouse_pos) and not self.waves.empty():
-                    self.current_wave = self.next_wave
-                    self.next_wave = self.waves.get()
-                    self.next_wave_btn.set_type("nextwave" + self.next_wave["type"])
-
-                    for i in range(0, self.current_wave["count"]):
-                        self.enemies.append(Enemy(self.game, self.current_wave["type"], self.start_tile, self.end_tile))
+                elif self.next_wave_btn.within_bounds(self.mouse_pos) and self.wave_no < len(self.waves) - 1:
+                    self.start_next_wave()
                     
-                    for enemy in self.enemies:
-                        enemy.move_to(self.end_tile)
-                    if self.health > 10:
-                        self.health -= 10
-                    else:
-                        self.health = 0
 
     def do_updates(self):
         #After events are handled, all sprites are updated
@@ -211,11 +193,27 @@ class Level(Scene):
 
         #Enemies are updated
         for enemy in self.enemies:
-            enemy.update()
+            if enemy.is_alive():
+                if enemy.is_moved():
+                    enemy.move(self.grid)
+
+                enemy.update()
 
 
-    def find_path(self):
-        #Shortest path algorithm
+    def start_next_wave(self):
+        self.wave_no += 1
+        self.current_wave = self.waves[self.wave_no]
 
-        
-        return
+        if self.wave_no == len(self.waves) - 1:
+            self.next_wave_btn.set_type("wavesend")
+        else:
+            self.next_wave = self.waves[self.wave_no + 1]
+            self.next_wave_btn.set_type("nextwave" + self.next_wave["type"])
+
+        for i in range(0, self.current_wave["count"]):
+            self.enemies.append(Enemy(self.game, self.current_wave["type"], self.start_tile, self.end_tile))
+
+
+    def move_enemies(self):
+        for enemy in self.enemies:
+            enemy.move(self.grid)
