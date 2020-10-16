@@ -1,4 +1,5 @@
 import pygame
+import collections
 from .Scene import Scene
 from .GridTile import GridTile
 from .Enemy import Enemy
@@ -110,29 +111,30 @@ class Level(Scene):
                 y = self.mouse_tile[1]
 
                 #If tile clicked is not taken up by wall or tower
-                if self.grid[x][y].get_type() == "empty":
+                if self.grid[x][y].type == "empty":
                     #Depending on which button is selected, specified tower is created
-                    if self.selected == "createbasic":
+                    if self.selected == "createbasic" and self.is_path(self.mouse_tile):
                         self.grid[x][y].set_type("towerbasic")
                         self.selected = "none"
                         self.money -= 100
 
-                    elif self.selected == "createsplash":
+                    elif self.selected == "createsplash" and self.is_path(self.mouse_tile):
                         self.grid[x][y].set_type("towersplash")
                         self.selected = "none"
                         self.money -= 100
 
-                    elif self.selected == "createsniper":
+                    elif self.selected == "createsniper" and self.is_path(self.mouse_tile):
                         self.grid[x][y].set_type("towersniper")
                         self.selected = "none"
                         self.money -= 100
 
-                    elif self.selected == "createincendiary":
+                    elif self.selected == "createincendiary" and self.is_path(self.mouse_tile):
                         self.grid[x][y].set_type("towerincendiary")
                         self.selected = "none"
                         self.money -= 100
 
             else:
+                #Button selection
                 #If mouse clicks within within bounds of a button and has enough money it is selected
                 if self.create_basic_btn.within_bounds(self.mouse_pos) and self.money >= 100:
                     if self.selected == "createbasic":
@@ -158,6 +160,7 @@ class Level(Scene):
                     else:
                         self.selected = "createincendiary"
 
+                #If player clicks "next wave" and there are waves remaining
                 elif self.next_wave_btn.within_bounds(self.mouse_pos) and self.wave_no < len(self.waves) - 1:
                     self.start_next_wave()
                     
@@ -166,6 +169,8 @@ class Level(Scene):
         #After events are handled, all sprites are updated
 
         #Health bar is updated
+        if self.health < 0:
+            self.health = 0
         pygame.draw.rect(self.game["display"], (255, 255, 255), (60, 25, 225, 15))
         pygame.draw.rect(self.game["display"], (197, 9, 9), (60, 25, self.health * 2.25, 15))
 
@@ -184,23 +189,29 @@ class Level(Scene):
         self.create_incendiary_btn.update(self.mouse_pos, self.selected)
 
         #Next wave button is updated
-        self.next_wave_btn.update(self.mouse_pos)
+        self.next_wave_btn.update(self.mouse_pos, "", self.next_wave["count"])
 
         #Every tile in the grid is updated
         for tile_y in self.grid:
             for tile_x in tile_y:
                 tile_x.update(self.mouse_tile)
 
-        #Enemies are updated
+        #All enemies are updated
         for enemy in self.enemies:
-            if enemy.is_alive():
-                if enemy.is_moved():
+            if enemy.damaging:
+                self.health -= enemy.damage
+                enemy.damaging = False
+            #Only live enemies are rendered
+            if enemy.alive:
+                #If enemy has finished a movement, it immediately performs the next
+                if enemy.moved:
                     enemy.move(self.grid)
 
                 enemy.update()
 
 
     def start_next_wave(self):
+        
         self.wave_no += 1
         self.current_wave = self.waves[self.wave_no]
 
@@ -217,3 +228,43 @@ class Level(Scene):
     def move_enemies(self):
         for enemy in self.enemies:
             enemy.move(self.grid)
+
+    
+    def is_path(self, new_tower):
+        #When a new tower is to be placed, this method determines whether it blocks the enemies path or not
+        #Towers can only be placed if they do not block the path entirely
+        #A breadth-first shortest path algorithm is used to calculate this
+        
+        grid = self.grid
+        start = self.start_tile
+        new_tower = tuple(new_tower)
+
+        #The algorithm uses a queue data type to build the path
+        queue = collections.deque([[start]])
+
+        #Stores all the tiles that have been "seen" by the algorithm
+        seen = set([start])
+        
+        while queue:
+            path = queue.popleft()
+            x, y = path[-1]
+
+            if grid[x][y].type == "end":
+                #If no path could be made, returns false
+                if path == None:
+                    return False
+                #If a path could be made, returns True
+                else:
+                    return True
+
+            #For every tile that neighbours the current x, y
+            for x2, y2 in ((x+1,y), (x-1,y), (x,y+1), (x,y-1)):
+                #Evaluates to True if tile is not a wall or tower
+                does_not_block = grid[x2][y2].type == "empty" or grid[x2][y2].type == "end" or grid[x2][y2].type == "start"
+                #If coord is within the range of the grid, is not currently taken up by wall or tower,
+                #will not be taken up by the new tower once placed, and has not been seen yet
+                if 0 <= x2 < 16 and 0 <= y2 < 16 and does_not_block and (x2, y2) != new_tower and (x2, y2) not in seen:
+                    #The coord along with the current path is appended to the queue
+                    queue.append(path + [(x2, y2)])
+                    #The coord is added to seen
+                    seen.add((x2, y2))

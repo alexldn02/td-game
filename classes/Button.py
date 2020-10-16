@@ -5,11 +5,9 @@ class Button:
     def __init__(self, game, type):
         self.game = game
 
+        self.font = pygame.font.Font("./assets/font.ttf", 24)
+
         self.set_type(type)
-
-
-    def get_type(self):
-        return self.type
 
     
     def set_type(self, type):
@@ -62,8 +60,9 @@ class Button:
 
         elif self.type == "wavesend":
             self.bounds = [[35, 345], [775, 925]]
-            self.sprite = pygame.image.load("./assets/nextwaveheavybtnhovered.png")
-            self.sprite_hovered = pygame.image.load("./assets/nextwaveheavybtn.png")
+            self.sprite = pygame.image.load("./assets/nextwavenonebtn.png")
+            self.sprite_hovered = pygame.image.load("./assets/nextwavenonebtnhovered.png")
+
 
     def within_bounds(self, mouse_pos):
         #Returns true if mouse is over button
@@ -73,7 +72,7 @@ class Button:
             return False
 
 
-    def update(self, mouse_pos, selected = ""):
+    def update(self, mouse_pos, selected = "", number = 0):
         #Blits sprite depending on whether button is selected or hovered over
         if selected == self.type:
             self.game["display"].blit(self.sprite_selected, (self.bounds[0][0], self.bounds[1][0]))
@@ -81,3 +80,6 @@ class Button:
             self.game["display"].blit(self.sprite_hovered, (self.bounds[0][0], self.bounds[1][0]))
         else:
             self.game["display"].blit(self.sprite, (self.bounds[0][0], self.bounds[1][0]))
+
+        if self.type == "nextwavelight" or self.type == "nextwavemedium" or self.type == "nextwaveheavy":
+            

@@ -11,12 +11,10 @@ class GridTile:
         self.pos = pos
 
 
-    def get_type(self):
-        return self.type
-
     def set_type(self, type):
         self.type = type
         self.set_sprite()
+
 
     def set_sprite(self):
         #Depending on what type the grid tile is, corresponding assets are loaded
@@ -45,8 +43,6 @@ class GridTile:
             self.sprite = pygame.image.load("./assets/towerincendiary.png")
             self.sprite_hovered = pygame.image.load("./assets/towerincendiaryhovered.png")
 
-    def get_pos(self):
-        return self.pos
 
     def update(self, mouse_tile):
         #Blits sprite depending on whether tile is hovered over

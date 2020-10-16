@@ -35,11 +35,11 @@ level_data = [{
         }]
 
 #Width and height of game window
-game_width = 1280
-game_height = 960
+GAME_WIDTH = 1280
+GAME_HEIGHT = 960
 
 #Using pygame to set width, height and caption for game window
-game["display"] = pygame.display.set_mode((game_width, game_height))
+game["display"] = pygame.display.set_mode((GAME_WIDTH, GAME_HEIGHT))
 pygame.display.set_caption("Confrontation")
 
 #Setting up an in game clock
