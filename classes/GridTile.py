@@ -5,49 +5,36 @@ class GridTile:
     def __init__(self, game, type, pos):
         self.game = game
 
-        self.type = type
-        self.set_sprite()
+        self.set_type(type)
 
         self.pos = pos
+
+        self.hover_square = pygame.Surface((50, 50))
+        self.hover_square.set_alpha(32)
+        self.hover_square.fill((255,255,255))
 
 
     def set_type(self, type):
         self.type = type
-        self.set_sprite()
 
-
-    def set_sprite(self):
         #Depending on what type the grid tile is, corresponding assets are loaded
         if self.type == "empty":
             self.sprite = pygame.image.load("./assets/tile.png")
-            self.sprite_hovered = pygame.image.load("./assets/tilehovered.png")
+
         elif self.type == "wall":
             self.sprite = pygame.image.load("./assets/wall.png")
-            self.sprite_hovered = pygame.image.load("./assets/wallhovered.png")
+
         elif self.type == "start":
             self.sprite = pygame.image.load("./assets/start.png")
-            self.sprite_hovered = pygame.image.load("./assets/starthovered.png")
+
         elif self.type == "end":
             self.sprite = pygame.image.load("./assets/end.png")
-            self.sprite_hovered = pygame.image.load("./assets/endhovered.png")
-        elif self.type == "towerbasic":
-            self.sprite = pygame.image.load("./assets/towerbasic.png")
-            self.sprite_hovered = pygame.image.load("./assets/towerbasichovered.png")
-        elif self.type == "towersplash":
-            self.sprite = pygame.image.load("./assets/towersplash.png")
-            self.sprite_hovered = pygame.image.load("./assets/towersplashhovered.png")
-        elif self.type == "towersniper":
-            self.sprite = pygame.image.load("./assets/towersniper.png")
-            self.sprite_hovered = pygame.image.load("./assets/towersniperhovered.png")
-        elif self.type == "towerincendiary":
-            self.sprite = pygame.image.load("./assets/towerincendiary.png")
-            self.sprite_hovered = pygame.image.load("./assets/towerincendiaryhovered.png")
 
 
     def update(self, mouse_tile):
-        #Blits sprite depending on whether tile is hovered over
-        if mouse_tile == self.pos:
-                self.game["display"].blit(self.sprite_hovered, (self.pos[0]*50 + 435, self.pos[1]*50 + 115))
-        else:
-            self.game["display"].blit(self.sprite, (self.pos[0]*50 + 435, self.pos[1]*50 + 115))
+        #Blits tile sprite
+        self.game["display"].blit(self.sprite, (self.pos[0]*50 + 435, self.pos[1]*50 + 115))
+        #Draws transparent square on top if tile is hovered over
+        if tuple(mouse_tile) == self.pos:
+            self.game["display"].blit(self.hover_square, (self.pos[0]*50 + 435, self.pos[1]*50 + 115))
 

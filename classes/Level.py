@@ -2,6 +2,7 @@ import pygame
 import collections
 from .Scene import Scene
 from .GridTile import GridTile
+from .Tower import Tower
 from .Enemy import Enemy
 from .Button import Button
 
@@ -42,7 +43,7 @@ class Level(Scene):
                 else:
                     tile_type = "empty"
 
-                tile = GridTile(self.game, tile_type, [a, b])
+                tile = GridTile(self.game, tile_type, (a, b))
 
                 self.grid[a].append(tile)
 
@@ -114,22 +115,22 @@ class Level(Scene):
                 if self.grid[x][y].type == "empty":
                     #Depending on which button is selected, specified tower is created
                     if self.selected == "createbasic" and self.is_path(self.mouse_tile):
-                        self.grid[x][y].set_type("towerbasic")
+                        self.grid[x][y] = Tower(self.game, "basic", (x, y))
                         self.selected = "none"
                         self.money -= 100
 
                     elif self.selected == "createsplash" and self.is_path(self.mouse_tile):
-                        self.grid[x][y].set_type("towersplash")
+                        self.grid[x][y] = Tower(self.game, "splash", (x, y))
                         self.selected = "none"
                         self.money -= 100
 
                     elif self.selected == "createsniper" and self.is_path(self.mouse_tile):
-                        self.grid[x][y].set_type("towersniper")
+                        self.grid[x][y] = Tower(self.game, "sniper", (x, y))
                         self.selected = "none"
                         self.money -= 100
 
                     elif self.selected == "createincendiary" and self.is_path(self.mouse_tile):
-                        self.grid[x][y].set_type("towerincendiary")
+                        self.grid[x][y] = Tower(self.game, "incendiary", (x, y))
                         self.selected = "none"
                         self.money -= 100
 
@@ -176,8 +177,8 @@ class Level(Scene):
 
         #Money display is updated
         pygame.draw.rect(self.game["display"], (219, 178, 111), (60, 65, 85, 25))
-        self.money_text = self.font.render(str(self.money), True, (0,0,0))
-        self.game["display"].blit(self.money_text, (64, 67))
+        money_text = self.font.render(str(self.money), True, (0,0,0))
+        self.game["display"].blit(money_text, (64, 67))
         
         #Back button is updated
         self.back_btn.update(self.mouse_pos)
@@ -189,12 +190,19 @@ class Level(Scene):
         self.create_incendiary_btn.update(self.mouse_pos, self.selected)
 
         #Next wave button is updated
-        self.next_wave_btn.update(self.mouse_pos, "", self.next_wave["count"])
+        if self.wave_no == len(self.waves) - 1:
+            wave_count = -1
+        else:
+            wave_count = self.waves[self.wave_no + 1]["count"]
+        self.next_wave_btn.update(self.mouse_pos, "", wave_count)
 
         #Every tile in the grid is updated
         for tile_y in self.grid:
             for tile_x in tile_y:
-                tile_x.update(self.mouse_tile)
+                if isinstance(tile_x, Tower):
+                    tile_x.update(self.mouse_tile, self.enemies)
+                else:
+                    tile_x.update(self.mouse_tile)
 
         #All enemies are updated
         for enemy in self.enemies:

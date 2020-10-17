@@ -5,7 +5,7 @@ class Button:
     def __init__(self, game, type):
         self.game = game
 
-        self.font = pygame.font.Font("./assets/font.ttf", 24)
+        self.font = pygame.font.Font("./assets/font.ttf", 25)
 
         self.set_type(type)
 
@@ -82,4 +82,6 @@ class Button:
             self.game["display"].blit(self.sprite, (self.bounds[0][0], self.bounds[1][0]))
 
         if self.type == "nextwavelight" or self.type == "nextwavemedium" or self.type == "nextwaveheavy":
+            wave_count_text = self.font.render(str(number), True, (115,113,102))
+            self.game["display"].blit(wave_count_text, (96, 839))
             
