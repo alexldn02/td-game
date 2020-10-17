@@ -13,22 +13,24 @@ class GridTile:
         self.hover_square.set_alpha(32)
         self.hover_square.fill((255,255,255))
 
+        self.attack_wait_time = 0
+
 
     def set_type(self, type):
         self.type = type
 
         #Depending on what type the grid tile is, corresponding assets are loaded
         if self.type == "empty":
-            self.sprite = pygame.image.load("./assets/tile.png")
+            self.sprite = pygame.image.load("./assets/tileempty.png")
 
         elif self.type == "wall":
-            self.sprite = pygame.image.load("./assets/wall.png")
+            self.sprite = pygame.image.load("./assets/tilewall.png")
 
         elif self.type == "start":
-            self.sprite = pygame.image.load("./assets/start.png")
+            self.sprite = pygame.image.load("./assets/tilestart.png")
 
         elif self.type == "end":
-            self.sprite = pygame.image.load("./assets/end.png")
+            self.sprite = pygame.image.load("./assets/tileend.png")
 
 
     def update(self, mouse_tile):

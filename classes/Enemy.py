@@ -111,5 +111,8 @@ class Enemy:
             else:
                 self.moved = True
         
+        if self.health <= 0:
+            self.alive = False
+        
         blit_pos = (self.current_pos[0] - self.middle[0], self.current_pos[1] - self.middle[1])
         self.game["display"].blit(self.sprite_rot, blit_pos)

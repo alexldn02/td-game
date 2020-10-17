@@ -28,6 +28,15 @@ class Tower(GridTile):
             self.damage = 1
 
 
+    def attack(self, enemy):
+        self.attack_wait_time += 1
+        if self.attack_wait_time == 60:
+            enemy.health -= self.damage
+            print("pow")
+            self.attack_wait_time = 0
+
+
+
     def update(self, mouse_tile, enemies):
         #Blits tower sprite
         self.game["display"].blit(self.sprite, (self.pos[0]*50 + 435, self.pos[1]*50 + 115))
@@ -48,4 +57,5 @@ class Tower(GridTile):
         if nearby_enemies:
             #Nearest enemy is the first of the list where it is sorted by the distance away from tower of each enemy nearby
             nearest_enemy = sorted(nearby_enemies, key=lambda x: x[1])[0][0]
+            self.attack(nearest_enemy)
 

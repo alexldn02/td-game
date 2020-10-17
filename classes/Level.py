@@ -167,11 +167,12 @@ class Level(Scene):
                     
 
     def do_updates(self):
-        #After events are handled, all sprites are updated
+        #After events are handled, all objects are updated
 
         #Health bar is updated
         if self.health < 0:
             self.health = 0
+
         pygame.draw.rect(self.game["display"], (255, 255, 255), (60, 25, 225, 15))
         pygame.draw.rect(self.game["display"], (197, 9, 9), (60, 25, self.health * 2.25, 15))
 
@@ -197,8 +198,8 @@ class Level(Scene):
         self.next_wave_btn.update(self.mouse_pos, "", wave_count)
 
         #Every tile in the grid is updated
-        for tile_y in self.grid:
-            for tile_x in tile_y:
+        for row in self.grid:
+            for tile_x in row:
                 if isinstance(tile_x, Tower):
                     tile_x.update(self.mouse_tile, self.enemies)
                 else:
@@ -219,7 +220,7 @@ class Level(Scene):
 
 
     def start_next_wave(self):
-        
+        #Starts the next wave of enemies
         self.wave_no += 1
         self.current_wave = self.waves[self.wave_no]
 
@@ -229,13 +230,8 @@ class Level(Scene):
             self.next_wave = self.waves[self.wave_no + 1]
             self.next_wave_btn.set_type("nextwave" + self.next_wave["type"])
 
-        for i in range(0, self.current_wave["count"]):
+        for _ in range(0, self.current_wave["count"]):
             self.enemies.append(Enemy(self.game, self.current_wave["type"], self.start_tile, self.end_tile))
-
-
-    def move_enemies(self):
-        for enemy in self.enemies:
-            enemy.move(self.grid)
 
     
     def is_path(self, new_tower):

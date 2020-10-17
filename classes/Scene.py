@@ -24,6 +24,7 @@ class Scene:
                 #Performs event checks found in child classes
                 self.do_events()
 
+            #Performs updates found in child classes
             self.do_updates()
 
             #Updates the game at 60fps

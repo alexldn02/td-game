@@ -54,4 +54,3 @@ level1.start()
 #Shuts down pygame and current program when while loop in Scene ends
 pygame.quit()
 quit()
-
