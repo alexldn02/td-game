@@ -5,7 +5,8 @@ class Button:
     def __init__(self, game, type):
         self.game = game
 
-        self.font = pygame.font.Font("./assets/font.ttf", 25)
+        self.time_left_font = pygame.font.Font("./assets/font.ttf", 25)
+        self.enemy_count_font = pygame.font.Font("./assets/font.ttf", 25)
 
         self.set_type(type)
 
@@ -74,9 +75,16 @@ class Button:
         self.game["display"].blit(self.sprite, (self.bounds[0][0], self.bounds[1][0]))
 
         #Blits text if next wave
+        #if self.type == "nextwavelight" or self.type == "nextwavemedium" or self.type == "nextwaveheavy":
+            #time_left_text = self.time_left_font.render(str(time_left), True, (115,113,102))
+            #self.game["display"].blit(time_left_text, (96, 839))
+
         if self.type == "nextwavelight" or self.type == "nextwavemedium" or self.type == "nextwaveheavy":
-            wave_count_text = self.font.render(str(count), True, (115,113,102))
-            self.game["display"].blit(wave_count_text, (96, 839))
+            enemy_count_text = self.enemy_count_font.render(str(count), True, (0,0,0))
+            if len(str(count)) == 1:
+                self.game["display"].blit(enemy_count_text, (265, 875))
+            else:
+                self.game["display"].blit(enemy_count_text, (260, 875))
 
         #Blits selected transparent rectangle if selected
         if selected == self.type:

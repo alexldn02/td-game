@@ -15,6 +15,8 @@ class GridTile:
 
         self.attack_wait_time = 0
 
+        self.agro = False
+
 
     def set_type(self, type):
         self.type = type

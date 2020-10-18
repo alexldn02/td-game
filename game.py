@@ -1,5 +1,4 @@
 import pygame
-from classes.Scene import Scene
 from classes.TitleScene import TitleScene
 from classes.Level import Level
 

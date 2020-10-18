@@ -81,6 +81,13 @@ class Level(Scene):
         #Level background image is blitted to the scene
         self.game["display"].blit(self.bg, (0, 0))
 
+        #Timers are set to 0
+        self.enemy_spawn_timer = 0
+        self.next_wave_timer = 0
+
+        self.enemies_spawning = False
+        self.enemies_spawned = 0
+
         #Starts loop from method found in parent Scene class
         self.do_loop()
 
@@ -161,8 +168,8 @@ class Level(Scene):
                     else:
                         self.selected = "createincendiary"
 
-                #If player clicks "next wave" and there are waves remaining
-                elif self.next_wave_btn.within_bounds(self.mouse_pos) and self.wave_no < len(self.waves) - 1:
+                #If player clicks "next wave" and there are waves remaining and enemy spawning is not occurring
+                elif self.next_wave_btn.within_bounds(self.mouse_pos) and self.wave_no < len(self.waves) - 1 and not self.enemies_spawning:
                     self.start_next_wave()
                     
 
@@ -215,8 +222,35 @@ class Level(Scene):
                 #If enemy has finished a movement, it immediately performs the next
                 if enemy.moved:
                     enemy.move(self.grid)
-
                 enemy.update()
+            elif enemy.to_reward:
+                self.money += enemy.reward
+                enemy.to_reward = False
+
+        #Health bars of enemies are updated after enemies so that they are blitted in front
+        for enemy in self.enemies:
+            if enemy.alive:
+                enemy.update_health_bar()
+
+        #If process of spawning enemies is underway
+        if self.enemies_spawning:
+            #First enemy is spawned immediately
+            if self.enemies_spawned == 0:
+                self.enemies.append(Enemy(self.game, self.current_wave["type"], self.start_tile, self.end_tile))
+                self.enemies_spawned += 1
+
+            self.enemy_spawn_timer += 1
+
+            #Next enemies are spawned one every second (60 frames)
+            if self.enemy_spawn_timer == 60:
+                self.enemies.append(Enemy(self.game, self.current_wave["type"], self.start_tile, self.end_tile))
+                self.enemies_spawned += 1
+
+                if self.enemies_spawned == self.current_wave["count"]:
+                    self.enemies_spawning = False
+                    self.enemies_spawned = 0
+
+                self.enemy_spawn_timer = 0
 
 
     def start_next_wave(self):
@@ -230,8 +264,8 @@ class Level(Scene):
             self.next_wave = self.waves[self.wave_no + 1]
             self.next_wave_btn.set_type("nextwave" + self.next_wave["type"])
 
-        for _ in range(0, self.current_wave["count"]):
-            self.enemies.append(Enemy(self.game, self.current_wave["type"], self.start_tile, self.end_tile))
+        #Process of spawning enemies begins
+        self.enemies_spawning = True            
 
     
     def is_path(self, new_tower):

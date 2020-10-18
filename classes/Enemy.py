@@ -14,7 +14,11 @@ class Enemy:
 
         self.damaging = False
 
+        self.fire_damage = 0
+        self.on_fire_timer = 0
+
         self.type = type
+
         self.current_tile = start_tile
         self.dest_tile = ()
         self.end_tile = end_tile
@@ -23,24 +27,31 @@ class Enemy:
         #so that they can be blitted using their centre coordinate insstead of top left
         if self.type == "light":
             self.sprite = pygame.image.load('./assets/enemylight.png')
-            self.middle = [5, 8]
+            self.middle = (5, 8)
             self.speed = 0.5
-            self.health = 20
+            self.max_health = 20
             self.damage = 5
+            self.reward = 10
             
         elif self.type == "medium":
             self.sprite = pygame.image.load('./assets/enemymedium.png')
-            self.middle = [7, 9]
+            self.middle = (7, 9)
             self.speed = 0.3
-            self.health = 40
+            self.max_health = 40
             self.damage = 10
+            self.reward = 20
             
         elif self.type == "heavy":
             self.sprite = pygame.image.load('./assets/enemyheavy.png')
-            self.middle = [7, 10]
+            self.middle = (7, 10)
             self.speed = 0.1
-            self.health = 80
+            self.max_health = 80
             self.damage = 20
+            self.reward = 40
+
+        self.health = self.max_health
+
+        self.to_reward = False
 
         self.current_pos = [self.current_tile[0]*50 + random.randint(0, 50) + 435, self.current_tile[1]*50 + random.randint(0, 50) + 115]
         self.dest_pos = ()
@@ -110,9 +121,31 @@ class Enemy:
                 self.alive = False
             else:
                 self.moved = True
+
+        if self.fire_damage:
+            self.on_fire_timer += 1
+            if self.on_fire_timer % 60 == 0:
+                print("ow")
+                self.health -= self.fire_damage
+            if self.on_fire_timer == 600:
+                self.fire_damage = 0
+                self.on_fire_timer = 0
         
         if self.health <= 0:
+            self.to_reward = True
             self.alive = False
         
         blit_pos = (self.current_pos[0] - self.middle[0], self.current_pos[1] - self.middle[1])
         self.game["display"].blit(self.sprite_rot, blit_pos)
+
+    
+    def update_health_bar(self):
+
+        bar_rect = (self.current_pos[0] - 7.5, self.current_pos[1] - 15, 15, 2)
+        health_rect = (self.current_pos[0] - 7.5, self.current_pos[1] - 15, 15 * (self.health / self.max_health), 2)
+
+        pygame.draw.rect(self.game["display"], (197, 9, 9), bar_rect)
+        if self.fire_damage:
+            pygame.draw.rect(self.game["display"], (255, 150, 9), health_rect)
+        else:
+            pygame.draw.rect(self.game["display"], (9, 197, 9), health_rect)
