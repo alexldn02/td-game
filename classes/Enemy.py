@@ -36,7 +36,7 @@ class Enemy:
         elif self.type == "medium":
             self.sprite = pygame.image.load('./assets/enemymedium.png')
             self.middle = (7, 9)
-            self.speed = 0.3
+            self.speed = 0.4
             self.max_health = 40
             self.damage = 10
             self.reward = 20
@@ -44,7 +44,7 @@ class Enemy:
         elif self.type == "heavy":
             self.sprite = pygame.image.load('./assets/enemyheavy.png')
             self.middle = (7, 10)
-            self.speed = 0.1
+            self.speed = 0.3
             self.max_health = 80
             self.damage = 20
             self.reward = 40
@@ -107,45 +107,55 @@ class Enemy:
 
 
     def update(self):
-
+        #If enemy x coord has not reached its destination x coord
         if round(self.current_pos[0]) != round(self.dest_pos[0]):
             self.current_pos[0] += self.move_vector[0]
 
+        #If enemy y coord has not reached its destination y coord
         if round(self.current_pos[1]) != round(self.dest_pos[1]):
             self.current_pos[1] += self.move_vector[1]
 
+        #If enemy has reached its destination in a movement
         elif round(self.current_pos[1]) == round(self.dest_pos[1]) and round(self.current_pos[0]) == round(self.dest_pos[0]):
+            #Current tile is updated
             self.current_tile = self.dest_tile
+            #If the end tile has been reached, enemy dies without giving a reward and player loses HP
             if self.current_tile == self.end_tile:
                 self.damaging = True
                 self.alive = False
             else:
                 self.moved = True
 
+        #If the enemy is on fire (fire_damage is not 0)
         if self.fire_damage:
             self.on_fire_timer += 1
+            #Every second (60 frames) the enemy loses some health
             if self.on_fire_timer % 60 == 0:
-                print("ow")
                 self.health -= self.fire_damage
+            #After 10 seconds enemy is no longer on fire
             if self.on_fire_timer == 600:
                 self.fire_damage = 0
                 self.on_fire_timer = 0
         
+        #If the enemy's health reaches 0 it is dead and its death reward is given to the player
         if self.health <= 0:
             self.to_reward = True
             self.alive = False
         
+        #Enemy sprite is blitted onto the scene
         blit_pos = (self.current_pos[0] - self.middle[0], self.current_pos[1] - self.middle[1])
         self.game["display"].blit(self.sprite_rot, blit_pos)
 
     
     def update_health_bar(self):
+        #The position of the health bar is calculated from the enemy's position
+        red_rect = (self.current_pos[0] - 7.5, self.current_pos[1] - 15, 15, 2)
+        #The green rectangle's width is calculated based on the enemy's remaining HP
+        green_rect = (self.current_pos[0] - 7.5, self.current_pos[1] - 15, 15 * (self.health / self.max_health), 2)
 
-        bar_rect = (self.current_pos[0] - 7.5, self.current_pos[1] - 15, 15, 2)
-        health_rect = (self.current_pos[0] - 7.5, self.current_pos[1] - 15, 15 * (self.health / self.max_health), 2)
-
-        pygame.draw.rect(self.game["display"], (197, 9, 9), bar_rect)
+        pygame.draw.rect(self.game["display"], (197, 9, 9), red_rect)
+        #If the enemy is on fire, green rectangle has its colour changed to orange
         if self.fire_damage:
-            pygame.draw.rect(self.game["display"], (255, 150, 9), health_rect)
+            pygame.draw.rect(self.game["display"], (255, 150, 9), green_rect)
         else:
-            pygame.draw.rect(self.game["display"], (9, 197, 9), health_rect)
+            pygame.draw.rect(self.game["display"], (9, 197, 9), green_rect)

@@ -6,7 +6,7 @@ class Tower(GridTile):
     def set_type(self, type, level = 0):
         self.type = type
 
-        #Depending on what type the tower is, corresponding assets are loaded
+        #Depending on what type the tower is, corresponding assets are loaded and stats are set
         if self.type == "basic":
             self.sprite = pygame.image.load("./assets/towerbasic.png")
             self.sprite_agro = pygame.image.load("./assets/towerbasicagro.png")
@@ -66,9 +66,43 @@ class Tower(GridTile):
             enemy.fire_damage = self.fire_damage
             self.attack_wait_time = 0
 
+    
+    def sort(self, enemies):
+        #Merge sort algorithm to order enemies by distance from the tower
+
+        #List only needs to be sorted if it has more than 1 item
+        if len(enemies) > 1:
+            mid = len(enemies) // 2
+            left_half = enemies[:mid]
+            right_half = enemies[mid:]
+            self.sort(left_half)
+            self.sort(right_half)
+            a = 0
+            b = 0
+            c = 0
+
+            while a < len(left_half) and b < len(right_half):
+                if left_half[a][1] < right_half[b][1]:
+                    enemies[c] = left_half[a]
+                    a += 1
+                else:
+                    enemies[c] = right_half[b]
+                    b += 1
+                c += 1
+
+            while a < len(left_half):
+                enemies[c] = left_half[a]
+                a += 1
+                c += 1
+            
+            while b < len(right_half):
+                enemies[c] = right_half[b]
+                b += 1
+                c += 1
+
 
     def update(self, mouse_tile, enemies):
-        #Blits tower sprite
+        #Blits appropriate tower sprite
         if self.agro:
             self.game["display"].blit(self.sprite_agro, (self.pos[0]*50 + 435, self.pos[1]*50 + 115))
         else:
@@ -85,16 +119,20 @@ class Tower(GridTile):
                 distance_away = (((self.pos[0]*50 + 460) - enemy.current_pos[0])**2 + ((self.pos[1]*50 + 140) - enemy.current_pos[1])**2)**0.5
                 #If the enemy is within the tower's range
                 if distance_away < self.range:
+                    #The enemy is added to the nearby enemies array
                     nearby_enemies.append((enemy, distance_away))
 
-        #If nearby enemies array is not empty
+        #If nearby enemies array is not empty, meaning there are enemies within range of tower
         if nearby_enemies:
+            #Tower is set to agro mode so sprite is changed
             self.agro = True
 
             #Nearest enemy is the first of the list where it is sorted by the distance away from tower of each enemy nearby
-            nearest_enemy = sorted(nearby_enemies, key=lambda x: x[1])[0][0]
+            self.sort(nearby_enemies)
+            #Selects only the enemy object, discarding its distance from the tower
+            nearest_enemy = nearby_enemies[0][0]
 
-            #Type of attack is dependent on tower type
+            #Nearest enemy is attacked using attack style dependent on tower type
             if self.type == "basic":
                 self.basic_attack(nearest_enemy)
             elif self.type == "splash":
@@ -104,6 +142,7 @@ class Tower(GridTile):
             else:
                 self.incendiary_attack(nearest_enemy)
         
+        #If there are no enemies nearby, tower is not agro
         else:
             self.agro = False
 
