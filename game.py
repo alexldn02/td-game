@@ -11,7 +11,7 @@ game = {}
 
 #This array contains data about how each level is defined
 level_data = [{
-        "startmoney": 200,
+        "startmoney": 5000,
         "tiles":[
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -30,7 +30,7 @@ level_data = [{
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
         ],
-        "waves":[{"type": "light", "count": 5}, {"type": "light", "count": 10}, {"type": "medium", "count": 5}, {"type": "medium", "count": 10}, {"type": "light", "count": 20}, {"type": "heavy", "count": 5}]
+        "waves":[{"type": "light", "count": 5}, {"type": "light", "count": 10}, {"type": "medium", "count": 5}, {"type": "medium", "count": 10}, {"type": "light", "count": 20}, {"type": "heavy", "count": 5}, {"type": "light", "count": 100}]
         }]
 
 #Width and height of game window

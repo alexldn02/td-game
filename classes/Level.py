@@ -175,11 +175,11 @@ class Level(Scene):
 
     def do_updates(self):
         #After events are handled, all objects are updated
+        #Sprites/shapes at the back of the scene have to be updated first and sprites/shapes at the front last
 
         #Health bar is updated
         if self.health < 0:
             self.health = 0
-
         pygame.draw.rect(self.game["display"], (255, 255, 255), (60, 25, 225, 15))
         pygame.draw.rect(self.game["display"], (197, 9, 9), (60, 25, self.health * 2.25, 15))
 
@@ -206,11 +206,20 @@ class Level(Scene):
 
         #Every tile in the grid is updated
         for row in self.grid:
-            for tile_x in row:
-                if isinstance(tile_x, Tower):
-                    tile_x.update(self.mouse_tile, self.enemies)
+            for tile in row:
+                #If the tile is a tower, enemies array is also given as an argument
+                if isinstance(tile, Tower):
+                    tile.update(self.mouse_tile, self.enemies)
                 else:
-                    tile_x.update(self.mouse_tile)
+                    tile.update(self.mouse_tile)
+
+        #Tower attack animations are updated
+        for row in self.grid:
+            for tile in row:
+                #If the tile is a tower
+                if isinstance(tile, Tower):
+                    if tile.agro:
+                        tile.update_attack_anim()
 
         #All enemies are updated
         for enemy in self.enemies:
@@ -256,16 +265,18 @@ class Level(Scene):
     def start_next_wave(self):
         #Starts the next wave of enemies
         self.wave_no += 1
+        #Current wave is updated
         self.current_wave = self.waves[self.wave_no]
 
+        #If the wave begun is the last wave, next wave button is set to no new waves type
         if self.wave_no == len(self.waves) - 1:
             self.next_wave_btn.set_type("wavesend")
+        #Otherwise it is set to display whatever wave is next
         else:
-            self.next_wave = self.waves[self.wave_no + 1]
-            self.next_wave_btn.set_type("nextwave" + self.next_wave["type"])
+            self.next_wave_btn.set_type("nextwave" + self.waves[self.wave_no + 1]["type"])
 
         #Process of spawning enemies begins
-        self.enemies_spawning = True            
+        self.enemies_spawning = True
 
     
     def is_path(self, new_tower):

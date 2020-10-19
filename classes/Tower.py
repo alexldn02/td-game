@@ -37,11 +37,28 @@ class Tower(GridTile):
             self.fire_rate = 1
 
 
-    def basic_attack(self, enemy):
-        self.attack_wait_time += 1
-        if self.attack_wait_time == 60 * self.fire_rate:
-            enemy.health -= self.damage    
-            self.attack_wait_time = 0
+    def basic_attack(self, enemies):
+        #Nearest enemy is the first of the list where it is sorted by the distance away from tower of each enemy nearby
+        self.sort(enemies)
+        #Selects only the enemy object, discarding its distance from the tower
+        nearest_enemy = enemies[0][0]
+
+        if not self.target:
+            self.target = nearest_enemy
+        elif not self.target.alive:
+            self.target = None
+            self.firing = False
+
+        if self.target:
+            self.attack_wait_time += 1
+            
+            if self.attack_wait_time == 5:
+                self.firing = False
+                
+            if self.attack_wait_time == 60 * self.fire_rate:
+                self.target.health -= self.damage
+                self.firing = True
+                self.attack_wait_time = 0
 
 
     def splash_attack(self, enemies):
@@ -52,19 +69,48 @@ class Tower(GridTile):
             self.attack_wait_time = 0
 
 
-    def sniper_attack(self, enemy):
-        self.attack_wait_time += 1
-        if self.attack_wait_time == 60 * self.fire_rate:
-            enemy.health -= self.damage 
-            self.attack_wait_time = 0
+    def sniper_attack(self, enemies):
+        #Nearest enemy is the first of the list where it is sorted by the distance away from tower of each enemy nearby
+        self.sort(enemies)
+        #Selects only the enemy object, discarding its distance from the tower
+        nearest_enemy = enemies[0][0]
+
+        if not self.target:
+            self.target = nearest_enemy
+        elif not self.target.alive:
+            self.target = None
+            self.firing = False
+
+        if self.target:
+            self.attack_wait_time += 1
+            
+            if self.attack_wait_time == 2:
+                self.firing = False
+                
+            if self.attack_wait_time == 60 * self.fire_rate:
+                self.target.health -= self.damage
+                self.firing = True
+                self.attack_wait_time = 0
 
 
-    def incendiary_attack(self, enemy):
-        self.attack_wait_time += 1
-        if self.attack_wait_time == 60 * self.fire_rate:
-            enemy.health -= self.damage
-            enemy.fire_damage = self.fire_damage
-            self.attack_wait_time = 0
+    def incendiary_attack(self, enemies):
+        #Nearest enemy is the first of the list where it is sorted by the distance away from tower of each enemy nearby
+        self.sort(enemies)
+        #Selects only the enemy object, discarding its distance from the tower
+        nearest_enemy = enemies[0][0]
+
+        if not self.target:
+            self.target = nearest_enemy
+        elif not self.target.alive:
+            self.target = None
+            self.firing = False
+                
+        if self.target:
+            self.attack_wait_time += 1
+            if self.attack_wait_time == 60 * self.fire_rate:
+                self.target.health -= self.damage
+                self.target.fire_damage = self.fire_damage
+                self.attack_wait_time = 0
 
     
     def sort(self, enemies):
@@ -127,25 +173,25 @@ class Tower(GridTile):
             #Tower is set to agro mode so sprite is changed
             self.agro = True
 
-            #Nearest enemy is the first of the list where it is sorted by the distance away from tower of each enemy nearby
-            self.sort(nearby_enemies)
-            #Selects only the enemy object, discarding its distance from the tower
-            nearest_enemy = nearby_enemies[0][0]
-
-            #Nearest enemy is attacked using attack style dependent on tower type
+            #Attack style dependent on tower type
             if self.type == "basic":
-                self.basic_attack(nearest_enemy)
+                self.basic_attack(nearby_enemies)
             elif self.type == "splash":
                 self.splash_attack(nearby_enemies)
             elif self.type == "sniper":
-                self.sniper_attack(nearest_enemy)
+                self.sniper_attack(nearby_enemies)
             else:
-                self.incendiary_attack(nearest_enemy)
+                self.incendiary_attack(nearby_enemies)
         
         #If there are no enemies nearby, tower is not agro
         else:
             self.agro = False
+            self.target = None
 
-            
 
-
+    def update_attack_anim(self):
+        if self.firing and self.target:
+            if self.type == "basic":
+                pygame.draw.line(self.game["display"], (255,255,255), (self.pos[0]*50 + 459.5, self.pos[1]*50 + 139.5), (self.target.current_pos[0], self.target.current_pos[1]), 2)
+            elif self.type == "sniper":
+                pygame.draw.line(self.game["display"], (255,255,255), (self.pos[0]*50 + 459.5, self.pos[1]*50 + 139.5), (self.target.current_pos[0], self.target.current_pos[1]))

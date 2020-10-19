@@ -14,8 +14,10 @@ class GridTile:
         self.hover_square.fill((255,255,255))
 
         self.attack_wait_time = 0
+        self.firing = False
 
         self.agro = False
+        self.target = None
 
 
     def set_type(self, type):
