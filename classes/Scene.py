@@ -30,7 +30,7 @@ class Scene:
             #Updates the game at 60fps
             pygame.display.update()
             self.game["clock"].tick(60)
-            print(self.game["clock"].get_fps())
+            #print(self.game["clock"].get_fps())
 
     def do_events(self):
         return

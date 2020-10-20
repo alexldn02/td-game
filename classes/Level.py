@@ -120,26 +120,33 @@ class Level(Scene):
 
                 #If tile clicked is not taken up by wall or tower
                 if self.grid[x][y].type == "empty":
-                    #Depending on which button is selected, specified tower is created
-                    if self.selected == "createbasic" and self.is_path(self.mouse_tile):
-                        self.grid[x][y] = Tower(self.game, "basic", (x, y))
-                        self.selected = "none"
-                        self.money -= 100
+                    enemy_here = False
+                    for enemy in self.enemies:
+                        if enemy.alive:
+                            if enemy.current_tile == tuple(self.mouse_tile) or enemy.dest_tile == tuple(self.mouse_tile):
+                                enemy_here = True
 
-                    elif self.selected == "createsplash" and self.is_path(self.mouse_tile):
-                        self.grid[x][y] = Tower(self.game, "splash", (x, y))
-                        self.selected = "none"
-                        self.money -= 100
+                    if self.is_path(self.mouse_tile) and not enemy_here:
+                        #Depending on which button is selected, specified tower is created
+                        if self.selected == "createbasic":
+                            self.grid[x][y] = Tower(self.game, "basic", (x, y))
+                            self.selected = "none"
+                            self.money -= 100
 
-                    elif self.selected == "createsniper" and self.is_path(self.mouse_tile):
-                        self.grid[x][y] = Tower(self.game, "sniper", (x, y))
-                        self.selected = "none"
-                        self.money -= 100
+                        elif self.selected == "createsplash":
+                            self.grid[x][y] = Tower(self.game, "splash", (x, y))
+                            self.selected = "none"
+                            self.money -= 100
 
-                    elif self.selected == "createincendiary" and self.is_path(self.mouse_tile):
-                        self.grid[x][y] = Tower(self.game, "incendiary", (x, y))
-                        self.selected = "none"
-                        self.money -= 100
+                        elif self.selected == "createsniper":
+                            self.grid[x][y] = Tower(self.game, "sniper", (x, y))
+                            self.selected = "none"
+                            self.money -= 100
+
+                        elif self.selected == "createincendiary":
+                            self.grid[x][y] = Tower(self.game, "incendiary", (x, y))
+                            self.selected = "none"
+                            self.money -= 100
 
             else:
                 #Button selection

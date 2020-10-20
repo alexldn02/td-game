@@ -1,4 +1,6 @@
 import pygame
+import random
+import math
 from .GridTile import GridTile
 
 class Tower(GridTile):
@@ -107,9 +109,15 @@ class Tower(GridTile):
                 
         if self.target:
             self.attack_wait_time += 1
+
+            if self.attack_wait_time == 20:
+                self.firing = False
+                self.target = None
+
             if self.attack_wait_time == 60 * self.fire_rate:
                 self.target.health -= self.damage
                 self.target.fire_damage = self.fire_damage
+                self.firing = True
                 self.attack_wait_time = 0
 
     
@@ -190,8 +198,20 @@ class Tower(GridTile):
 
 
     def update_attack_anim(self):
+        middle_pos = (self.pos[0]*50 + 460, self.pos[1]*50 + 140)
         if self.firing and self.target:
             if self.type == "basic":
-                pygame.draw.line(self.game["display"], (255,255,255), (self.pos[0]*50 + 459.5, self.pos[1]*50 + 139.5), (self.target.current_pos[0], self.target.current_pos[1]), 2)
+                pygame.draw.line(self.game["display"], (255,255,255), middle_pos, tuple(self.target.current_pos), 2)
             elif self.type == "sniper":
-                pygame.draw.line(self.game["display"], (255,255,255), (self.pos[0]*50 + 459.5, self.pos[1]*50 + 139.5), (self.target.current_pos[0], self.target.current_pos[1]))
+                pygame.draw.line(self.game["display"], (255,255,255), middle_pos, tuple(self.target.current_pos))
+            elif self.type == "incendiary":
+                pygame.draw.line(self.game["display"], (255,100,0), middle_pos, tuple(self.target.current_pos), 3)
+        elif self.type == "splash":
+            radius = math.floor(self.range * math.sin(self.attack_wait_time/60 * 0.5*math.pi))
+
+            surface = pygame.Surface((self.range*2, self.range*2))
+            surface.set_colorkey((0,0,0))
+            surface.set_alpha(192 - 192 * math.sin(self.attack_wait_time/60 * 0.5*math.pi))
+            pygame.draw.circle(surface, (255,255,255), (self.range, self.range), radius)
+
+            self.game["display"].blit(surface, (self.pos[0]*50 + 460 - self.range, self.pos[1]*50 + 140 - self.range))

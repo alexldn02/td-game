@@ -132,8 +132,8 @@ class Enemy:
             #Every second (60 frames) the enemy loses some health
             if self.on_fire_timer % 60 == 0:
                 self.health -= self.fire_damage
-            #After 10 seconds enemy is no longer on fire
-            if self.on_fire_timer == 600:
+            #After 15 seconds enemy is no longer on fire
+            if self.on_fire_timer == 900:
                 self.fire_damage = 0
                 self.on_fire_timer = 0
         
@@ -156,6 +156,6 @@ class Enemy:
         pygame.draw.rect(self.game["display"], (197, 9, 9), red_rect)
         #If the enemy is on fire, green rectangle has its colour changed to orange
         if self.fire_damage:
-            pygame.draw.rect(self.game["display"], (255, 150, 9), green_rect)
+            pygame.draw.rect(self.game["display"], (255, 100, 0), green_rect)
         else:
             pygame.draw.rect(self.game["display"], (9, 197, 9), green_rect)
