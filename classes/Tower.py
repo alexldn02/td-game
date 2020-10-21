@@ -38,13 +38,19 @@ class Tower(GridTile):
             self.fire_damage = 1
             self.fire_rate = 1
 
+
     def level_up(self):
+
         self.level += 1
-        self.range += 10
-        self.damage += 0.5
+
+        self.range = self.range * 1.05
+
+        self.fire_rate = self.fire_rate * 0.95
         
         if self.type == "incendiary":
-            self.fire_damage += 0.5
+            self.fire_damage = self.fire_damage * 1.05
+        else:
+            self.damage = self.damage * 1.05
 
 
     def basic_attack(self, enemies):
@@ -65,7 +71,7 @@ class Tower(GridTile):
             if self.attack_wait_time == 5:
                 self.firing = False
                 
-            if self.attack_wait_time == 60 * self.fire_rate:
+            if self.attack_wait_time == math.floor(60 * self.fire_rate):
                 self.target.health -= self.damage
                 self.firing = True
                 self.attack_wait_time = 0
@@ -73,7 +79,7 @@ class Tower(GridTile):
 
     def splash_attack(self, enemies):
         self.attack_wait_time += 1
-        if self.attack_wait_time == 60 * self.fire_rate:
+        if self.attack_wait_time == math.floor(60 * self.fire_rate):
             for enemy in enemies:
                 enemy[0].health -= self.damage  
             self.attack_wait_time = 0
@@ -97,7 +103,7 @@ class Tower(GridTile):
             if self.attack_wait_time == 2:
                 self.firing = False
                 
-            if self.attack_wait_time == 60 * self.fire_rate:
+            if self.attack_wait_time == math.floor(60 * self.fire_rate):
                 self.target.health -= self.damage
                 self.firing = True
                 self.attack_wait_time = 0
@@ -117,12 +123,13 @@ class Tower(GridTile):
                 
         if self.target:
             self.attack_wait_time += 1
+            print(math.floor(60 * self.fire_rate))
 
             if self.attack_wait_time == 20:
                 self.firing = False
                 self.target = None
 
-            if self.attack_wait_time == 60 * self.fire_rate:
+            if self.attack_wait_time == math.floor(60 * self.fire_rate):
                 self.target.health -= self.damage
                 self.target.fire_damage = self.fire_damage
                 self.firing = True
@@ -220,8 +227,10 @@ class Tower(GridTile):
             elif self.type == "incendiary":
                 pygame.draw.line(self.game["display"], (255,100,0), middle_pos, tuple(self.target.current_pos), 3)
         elif self.type == "splash":
+            max_radius = math.floor(self.range)
+
             #Radius of circle is determined by the wait time between attacks so it gets bigger and then starts small again next attack
-            radius = math.floor(self.range * math.sin(self.attack_wait_time/60 * 0.5*math.pi))
+            radius = math.floor(max_radius * math.sin(self.attack_wait_time/60 * 0.5*math.pi))
 
             #Margins refer to the distance between the middle of the tower and the edges of the grid
             x_margins = (middle_pos[0] - 435, 1235 - middle_pos[0])
@@ -229,26 +238,26 @@ class Tower(GridTile):
 
             #Margins are used to calculate how much of the Surface rect needs to be cut off to stop the attack animation from going out of the grid
             #Range is used so that the Surface rect is as small as possible to keep the fps up
-            if self.range > x_margins[0]:
-                x_cutoff_left = self.range - x_margins[0]
+            if max_radius > x_margins[0]:
+                x_cutoff_left = max_radius - x_margins[0]
             else:
                 x_cutoff_left = 0
-            if self.range > x_margins[1]:
-                x_cutoff_right = self.range - x_margins[1]
+            if max_radius > x_margins[1]:
+                x_cutoff_right = max_radius - x_margins[1]
             else:
                 x_cutoff_right = 0
 
-            if self.range > y_margins[0]:
-                y_cutoff_top = self.range - y_margins[0]
+            if max_radius > y_margins[0]:
+                y_cutoff_top = max_radius - y_margins[0]
             else:
                 y_cutoff_top = 0
-            if self.range > y_margins[1]:
-                y_cutoff_bottom = self.range - y_margins[1]
+            if max_radius > y_margins[1]:
+                y_cutoff_bottom = max_radius - y_margins[1]
             else:
                 y_cutoff_bottom = 0
 
             #Width and height of the invisible Surface rectangle
-            surface_dimensions = (self.range*2 - x_cutoff_left - x_cutoff_right, self.range*2 - y_cutoff_top - y_cutoff_bottom)
+            surface_dimensions = (max_radius*2 - x_cutoff_left - x_cutoff_right, max_radius*2 - y_cutoff_top - y_cutoff_bottom)
 
             #The Surface object has to be used because pygame cannot draw transparent circles unless they are blitted as part of a transparent Surface
             #pygame.draw.circle() cannot have an alpha value
@@ -259,9 +268,9 @@ class Tower(GridTile):
             surface.set_alpha(192 - 192 * math.sin(self.attack_wait_time/60 * 0.5*math.pi))
 
             #White circle is drawn onto the Surface
-            pygame.draw.circle(surface, (255,255,255), (self.range - x_cutoff_left, self.range - y_cutoff_top), radius)
+            pygame.draw.circle(surface, (255,255,255), (max_radius - x_cutoff_left, max_radius - y_cutoff_top), radius)
 
-            surface_pos = (self.pos[0]*50 + 460 - self.range + x_cutoff_left, self.pos[1]*50 + 140 - self.range + y_cutoff_top)
+            surface_pos = (self.pos[0]*50 + 460 - max_radius + x_cutoff_left, self.pos[1]*50 + 140 - max_radius + y_cutoff_top)
 
             #Surface object is blitted to the scene
             self.game["display"].blit(surface, surface_pos)

@@ -105,7 +105,7 @@ class Button:
         if selected == self.type:
             self.game["display"].blit(self.selected_rect, (self.bounds[0][0], self.bounds[1][0]))
         #Or disabled transparent rectangle if button is disabled
-        elif (self.type == "upgradetower" or self.type == "deletetower") and type(selected) != tuple:
+        elif (self.type == "upgradetower" or self.type == "deletetower") and type(selected) != tuple or self.type == "wavesend":
             self.game["display"].blit(self.disabled_rect, (self.bounds[0][0], self.bounds[1][0]))
         #Or hovered transparent rectangle if hovered over and not selected or disabled
         elif self.within_bounds(mouse_pos):

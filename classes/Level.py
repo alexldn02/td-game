@@ -23,6 +23,7 @@ class Level(Scene):
     def start(self):
         #Grid is represented as a 2D array, tiles are represented as objects within array
         self.grid = []
+        self.start_tiles = []
 
         for a in range(0, 16):
             self.grid.append([])
@@ -34,7 +35,7 @@ class Level(Scene):
                 #Or start type if they are defined as the start tile
                 elif self.level_data["tiles"][b][a] == 2:
                     tile_type = "start"
-                    self.start_tile = (a, b)
+                    self.start_tiles.append((a, b))
                 #Or end type if they are defined as the end tile
                 elif self.level_data["tiles"][b][a] == 3:
                     tile_type = "end"
@@ -129,7 +130,11 @@ class Level(Scene):
                                 enemy_here = True
 
                     #A tower can be built if it does not block the path and the tile is not currently being used by an enemy
-                    if self.is_path(self.mouse_tile) and not enemy_here:
+                    path = True
+                    for start_tile in self.start_tiles:
+                        if not self.is_path(start_tile, (x, y)):
+                            path = False
+                    if path and not enemy_here:
                         #Depending on which button is selected, specified tower is created
                         if self.selected == "createbasic":
                             self.grid[x][y] = Tower(self.game, "basic", (x, y))
@@ -186,8 +191,9 @@ class Level(Scene):
                         self.selected = "createincendiary"
 
                 elif self.upgrade_tower_btn.within_bounds(self.mouse_pos) and type(self.selected) == tuple and self.money >= 100:
-                    self.grid[self.selected[0]][self.selected[1]].level_up()
-                    self.money -= 100
+                    if self.grid[self.selected[0]][self.selected[1]].level < 10:
+                        self.grid[self.selected[0]][self.selected[1]].level_up()
+                        self.money -= 100
 
                 elif self.delete_tower_btn.within_bounds(self.mouse_pos) and type(self.selected) == tuple:
                     self.grid[self.selected[0]][self.selected[1]] = GridTile(self.game, "empty", self.selected)
@@ -277,14 +283,14 @@ class Level(Scene):
         if self.enemies_spawning:
             #First enemy is spawned immediately
             if self.enemies_spawned == 0:
-                self.enemies.append(Enemy(self.game, self.current_wave["type"], self.start_tile, self.end_tile))
+                self.enemies.append(Enemy(self.game, self.current_wave["type"], self.start_tiles[self.current_wave["starttile"]], self.end_tile))
                 self.enemies_spawned += 1
 
             self.enemy_spawn_timer += 1
 
             #Next enemies are spawned one every second (60 frames)
             if self.enemy_spawn_timer == 60:
-                self.enemies.append(Enemy(self.game, self.current_wave["type"], self.start_tile, self.end_tile))
+                self.enemies.append(Enemy(self.game, self.current_wave["type"], self.start_tiles[self.current_wave["starttile"]], self.end_tile))
                 self.enemies_spawned += 1
 
                 if self.enemies_spawned == self.current_wave["count"]:
@@ -311,13 +317,12 @@ class Level(Scene):
         self.enemies_spawning = True
 
     
-    def is_path(self, new_tower):
+    def is_path(self, start, new_tower):
         #When a new tower is to be placed, this method determines whether it blocks the enemies path or not
         #Towers can only be placed if they do not block the path entirely
         #A breadth-first shortest path algorithm is used to calculate this
         
         grid = self.grid
-        start = self.start_tile
         new_tower = tuple(new_tower)
 
         #The algorithm uses a queue data type to build the path

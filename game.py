@@ -25,12 +25,12 @@ level_data = [{
             [1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
             [1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1],
             [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
-            [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 1, 1],
+            [1, 1, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 1, 1],
             [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
         ],
-        "waves":[{"type": "light", "count": 5}, {"type": "light", "count": 10}, {"type": "medium", "count": 5}, {"type": "medium", "count": 10}, {"type": "light", "count": 20}, {"type": "heavy", "count": 5}, {"type": "light", "count": 100}]
+        "waves":[{"type": "light", "count": 5, "starttile": 0}, {"type": "light", "count": 10, "starttile": 1}, {"type": "medium", "count": 5, "starttile": 0}, {"type": "medium", "count": 10, "starttile": 1}, {"type": "light", "count": 20, "starttile": 0}, {"type": "heavy", "count": 5, "starttile": 1}, {"type": "light", "count": 100, "starttile": 0}]
         }]
 
 #Width and height of game window
