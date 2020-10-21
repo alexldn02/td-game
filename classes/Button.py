@@ -20,6 +20,10 @@ class Button:
         self.selected_rect.set_alpha(64)
         self.selected_rect.fill((255,255,255))
 
+        self.disabled_rect = pygame.Surface(size)
+        self.disabled_rect.set_alpha(64)
+        self.disabled_rect.fill((0,0,0))
+
     
     def set_type(self, type):
         self.type = type
@@ -44,6 +48,14 @@ class Button:
         elif self.type == "createincendiary":
             self.bounds = [[35, 345], [505, 615]]
             self.sprite = pygame.image.load("./assets/createincendiarybtn.png")
+
+        elif self.type == "upgradetower":
+            self.bounds = [[35, 180], [635, 745]]
+            self.sprite = pygame.image.load("./assets/upgradetowerbtn.png")
+
+        elif self.type == "deletetower":
+            self.bounds = [[200, 345], [635, 745]]
+            self.sprite = pygame.image.load("./assets/deletetowerbtn.png")
 
         elif self.type == "nextwavelight":
             self.bounds = [[35, 345], [775, 925]]
@@ -70,17 +82,20 @@ class Button:
             return False
 
 
-    def update(self, mouse_pos, selected = "", count = -1):
+    def update(self, mouse_pos, selected, count = -1):
         #Blits sprite
         self.game["display"].blit(self.sprite, (self.bounds[0][0], self.bounds[1][0]))
 
         #Blits text if next wave
         #if self.type == "nextwavelight" or self.type == "nextwavemedium" or self.type == "nextwaveheavy":
+            
+
+        if self.type == "nextwavelight" or self.type == "nextwavemedium" or self.type == "nextwaveheavy":
             #time_left_text = self.time_left_font.render(str(time_left), True, (115,113,102))
             #self.game["display"].blit(time_left_text, (96, 839))
 
-        if self.type == "nextwavelight" or self.type == "nextwavemedium" or self.type == "nextwaveheavy":
             enemy_count_text = self.enemy_count_font.render(str(count), True, (0,0,0))
+
             if len(str(count)) == 1:
                 self.game["display"].blit(enemy_count_text, (265, 875))
             else:
@@ -89,7 +104,10 @@ class Button:
         #Blits selected transparent rectangle if selected
         if selected == self.type:
             self.game["display"].blit(self.selected_rect, (self.bounds[0][0], self.bounds[1][0]))
-        #Or hovered transparent rectangle if hovered over
+        #Or disabled transparent rectangle if button is disabled
+        elif (self.type == "upgradetower" or self.type == "deletetower") and type(selected) != tuple:
+            self.game["display"].blit(self.disabled_rect, (self.bounds[0][0], self.bounds[1][0]))
+        #Or hovered transparent rectangle if hovered over and not selected or disabled
         elif self.within_bounds(mouse_pos):
             self.game["display"].blit(self.hover_rect, (self.bounds[0][0], self.bounds[1][0]))
 

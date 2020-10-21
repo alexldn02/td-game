@@ -67,10 +67,12 @@ class Level(Scene):
         self.create_splash_btn = Button(self.game, "createsplash")
         self.create_sniper_btn = Button(self.game, "createsniper")
         self.create_incendiary_btn = Button(self.game, "createincendiary")
+        self.upgrade_tower_btn = Button(self.game, "upgradetower")
+        self.delete_tower_btn = Button(self.game, "deletetower")
         self.next_wave_btn = Button(self.game, "nextwave" + self.waves[0]["type"])
 
-        #Stores which option on the left of the grid has been selected, defaults to "none"
-        self.selected = "none"
+        #Stores which option on the left of the grid has been selected, defaults to None
+        self.selected = None
 
         #Stores the position of the mouse in an array
         self.mouse_pos = pygame.mouse.get_pos()
@@ -126,59 +128,78 @@ class Level(Scene):
                             if enemy.current_tile == tuple(self.mouse_tile) or enemy.dest_tile == tuple(self.mouse_tile):
                                 enemy_here = True
 
+                    #A tower can be built if it does not block the path and the tile is not currently being used by an enemy
                     if self.is_path(self.mouse_tile) and not enemy_here:
                         #Depending on which button is selected, specified tower is created
                         if self.selected == "createbasic":
                             self.grid[x][y] = Tower(self.game, "basic", (x, y))
-                            self.selected = "none"
+                            self.selected = None
                             self.money -= 100
 
                         elif self.selected == "createsplash":
                             self.grid[x][y] = Tower(self.game, "splash", (x, y))
-                            self.selected = "none"
+                            self.selected = None
                             self.money -= 100
 
                         elif self.selected == "createsniper":
                             self.grid[x][y] = Tower(self.game, "sniper", (x, y))
-                            self.selected = "none"
+                            self.selected = None
                             self.money -= 100
 
                         elif self.selected == "createincendiary":
                             self.grid[x][y] = Tower(self.game, "incendiary", (x, y))
-                            self.selected = "none"
+                            self.selected = None
                             self.money -= 100
 
+                elif isinstance(self.grid[x][y], Tower):
+                    if self.selected == (x, y):
+                        self.selected = None
+                    else:
+                        self.selected = (x, y)
+
+            #If mouse clicks, not within grid
             else:
                 #Button selection
                 #If mouse clicks within within bounds of a button and has enough money it is selected
                 if self.create_basic_btn.within_bounds(self.mouse_pos) and self.money >= 100:
                     if self.selected == "createbasic":
-                        self.selected = "none"
+                        self.selected = None
                     else:
                         self.selected = "createbasic"
 
                 elif self.create_splash_btn.within_bounds(self.mouse_pos) and self.money >= 100:
                     if self.selected == "createsplash":
-                        self.selected = "none"
+                        self.selected = None
                     else:
                         self.selected = "createsplash"
 
                 elif self.create_sniper_btn.within_bounds(self.mouse_pos) and self.money >= 100:
                     if self.selected == "createsniper":
-                        self.selected = "none"
+                        self.selected = None
                     else:
                         self.selected = "createsniper"
 
                 elif self.create_incendiary_btn.within_bounds(self.mouse_pos) and self.money >= 100:
                     if self.selected == "createincendiary":
-                        self.selected = "none"
+                        self.selected = None
                     else:
                         self.selected = "createincendiary"
+
+                elif self.upgrade_tower_btn.within_bounds(self.mouse_pos) and type(self.selected) == tuple and self.money >= 100:
+                    self.grid[self.selected[0]][self.selected[1]].level_up()
+                    self.money -= 100
+
+                elif self.delete_tower_btn.within_bounds(self.mouse_pos) and type(self.selected) == tuple:
+                    self.grid[self.selected[0]][self.selected[1]] = GridTile(self.game, "empty", self.selected)
+                    self.selected = None
 
                 #If player clicks "next wave" and there are waves remaining and enemy spawning is not occurring
                 elif self.next_wave_btn.within_bounds(self.mouse_pos) and self.wave_no < len(self.waves) - 1 and not self.enemies_spawning:
                     self.start_next_wave()
                     
+        if self.event.type == pygame.KEYUP:
+            if self.event.key == pygame.K_ESCAPE:
+                self.selected = None
 
     def do_updates(self):
         #After events are handled, all objects are updated
@@ -196,7 +217,7 @@ class Level(Scene):
         self.game["display"].blit(money_text, (64, 67))
         
         #Back button is updated
-        self.back_btn.update(self.mouse_pos)
+        self.back_btn.update(self.mouse_pos, self.selected)
 
         #Tower create buttons are updated
         self.create_basic_btn.update(self.mouse_pos, self.selected)
@@ -204,19 +225,23 @@ class Level(Scene):
         self.create_sniper_btn.update(self.mouse_pos, self.selected)
         self.create_incendiary_btn.update(self.mouse_pos, self.selected)
 
+        #Tower action buttons are updated
+        self.upgrade_tower_btn.update(self.mouse_pos, self.selected)
+        self.delete_tower_btn.update(self.mouse_pos, self.selected)
+
         #Next wave button is updated
         if self.wave_no == len(self.waves) - 1:
             wave_count = -1
         else:
             wave_count = self.waves[self.wave_no + 1]["count"]
-        self.next_wave_btn.update(self.mouse_pos, "", wave_count)
+        self.next_wave_btn.update(self.mouse_pos, self.selected, wave_count)
 
         #Every tile in the grid is updated
         for row in self.grid:
             for tile in row:
                 #If the tile is a tower, enemies array is also given as an argument
                 if isinstance(tile, Tower):
-                    tile.update(self.mouse_tile, self.enemies)
+                    tile.update(self.mouse_tile, self.selected, self.enemies)
                 else:
                     tile.update(self.mouse_tile)
 

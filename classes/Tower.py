@@ -5,7 +5,7 @@ from .GridTile import GridTile
 
 class Tower(GridTile):
 
-    def set_type(self, type, level = 0):
+    def set_type(self, type):
         self.type = type
 
         #Depending on what type the tower is, corresponding assets are loaded and stats are set
@@ -13,7 +13,7 @@ class Tower(GridTile):
             self.sprite = pygame.image.load("./assets/towerbasic.png")
             self.sprite_agro = pygame.image.load("./assets/towerbasicagro.png")
             self.range = 125
-            self.damage = 5
+            self.damage = 4
             self.fire_rate = 0.75
 
         elif self.type == "splash":
@@ -27,7 +27,7 @@ class Tower(GridTile):
             self.sprite = pygame.image.load("./assets/towersniper.png")
             self.sprite_agro = pygame.image.load("./assets/towersniperagro.png")
             self.range = 200
-            self.damage = 7
+            self.damage = 6
             self.fire_rate = 1.5
 
         elif self.type == "incendiary":
@@ -37,6 +37,14 @@ class Tower(GridTile):
             self.damage = 2
             self.fire_damage = 1
             self.fire_rate = 1
+
+    def level_up(self):
+        self.level += 1
+        self.range += 10
+        self.damage += 0.5
+        
+        if self.type == "incendiary":
+            self.fire_damage += 0.5
 
 
     def basic_attack(self, enemies):
@@ -155,15 +163,20 @@ class Tower(GridTile):
                 c += 1
 
 
-    def update(self, mouse_tile, enemies):
+    def update(self, mouse_tile, selected, enemies):
         #Blits appropriate tower sprite
         if self.agro:
             self.game["display"].blit(self.sprite_agro, (self.pos[0]*50 + 435, self.pos[1]*50 + 115))
         else:
             self.game["display"].blit(self.sprite, (self.pos[0]*50 + 435, self.pos[1]*50 + 115))
 
+        level_text = self.font.render(str(self.level), True, (255,255,255))
+        self.game["display"].blit(level_text, (self.pos[0]*50 + 435, self.pos[1]*50 + 115))
+
+        if selected == self.pos:
+            self.game["display"].blit(self.selected_square, (self.pos[0]*50 + 435, self.pos[1]*50 + 115))
         #Draws transparent square on top if tile is hovered over
-        if tuple(mouse_tile) == self.pos:
+        elif tuple(mouse_tile) == self.pos:
             self.game["display"].blit(self.hover_square, (self.pos[0]*50 + 435, self.pos[1]*50 + 115))
 
         nearby_enemies = []
@@ -207,11 +220,48 @@ class Tower(GridTile):
             elif self.type == "incendiary":
                 pygame.draw.line(self.game["display"], (255,100,0), middle_pos, tuple(self.target.current_pos), 3)
         elif self.type == "splash":
+            #Radius of circle is determined by the wait time between attacks so it gets bigger and then starts small again next attack
             radius = math.floor(self.range * math.sin(self.attack_wait_time/60 * 0.5*math.pi))
 
-            surface = pygame.Surface((self.range*2, self.range*2))
-            surface.set_colorkey((0,0,0))
-            surface.set_alpha(192 - 192 * math.sin(self.attack_wait_time/60 * 0.5*math.pi))
-            pygame.draw.circle(surface, (255,255,255), (self.range, self.range), radius)
+            #Margins refer to the distance between the middle of the tower and the edges of the grid
+            x_margins = (middle_pos[0] - 435, 1235 - middle_pos[0])
+            y_margins = (middle_pos[1] - 115, 915 - middle_pos[1])
 
-            self.game["display"].blit(surface, (self.pos[0]*50 + 460 - self.range, self.pos[1]*50 + 140 - self.range))
+            #Margins are used to calculate how much of the Surface rect needs to be cut off to stop the attack animation from going out of the grid
+            #Range is used so that the Surface rect is as small as possible to keep the fps up
+            if self.range > x_margins[0]:
+                x_cutoff_left = self.range - x_margins[0]
+            else:
+                x_cutoff_left = 0
+            if self.range > x_margins[1]:
+                x_cutoff_right = self.range - x_margins[1]
+            else:
+                x_cutoff_right = 0
+
+            if self.range > y_margins[0]:
+                y_cutoff_top = self.range - y_margins[0]
+            else:
+                y_cutoff_top = 0
+            if self.range > y_margins[1]:
+                y_cutoff_bottom = self.range - y_margins[1]
+            else:
+                y_cutoff_bottom = 0
+
+            #Width and height of the invisible Surface rectangle
+            surface_dimensions = (self.range*2 - x_cutoff_left - x_cutoff_right, self.range*2 - y_cutoff_top - y_cutoff_bottom)
+
+            #The Surface object has to be used because pygame cannot draw transparent circles unless they are blitted as part of a transparent Surface
+            #pygame.draw.circle() cannot have an alpha value
+            surface = pygame.Surface(surface_dimensions)
+            surface.set_colorkey((0,0,0))
+
+            #Alpha value decreases with time from the beginning of the attack to have a fade-out effect
+            surface.set_alpha(192 - 192 * math.sin(self.attack_wait_time/60 * 0.5*math.pi))
+
+            #White circle is drawn onto the Surface
+            pygame.draw.circle(surface, (255,255,255), (self.range - x_cutoff_left, self.range - y_cutoff_top), radius)
+
+            surface_pos = (self.pos[0]*50 + 460 - self.range + x_cutoff_left, self.pos[1]*50 + 140 - self.range + y_cutoff_top)
+
+            #Surface object is blitted to the scene
+            self.game["display"].blit(surface, surface_pos)

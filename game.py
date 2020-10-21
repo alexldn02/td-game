@@ -11,7 +11,7 @@ game = {}
 
 #This array contains data about how each level is defined
 level_data = [{
-        "startmoney": 5000,
+        "startmoney": 99999,
         "tiles":[
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
