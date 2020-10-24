@@ -20,8 +20,8 @@ class TitleScene(Scene):
 
     def do_events(self):
         if self.event.type == pygame.MOUSEBUTTONUP:
-            self.testlevel.start()
-            #self.level1.start()
+            #self.testlevel.start()
+            self.level1.start()
             #self.level2.start()
 
     def do_updates(self):

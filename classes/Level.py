@@ -1,5 +1,6 @@
 import pygame
 import collections
+import math
 from .Scene import Scene
 from .GridTile import GridTile
 from .Tower import Tower
@@ -77,7 +78,7 @@ class Level(Scene):
         self.selected = None
 
         #Stores the position of the mouse in an array
-        self.mouse_pos = []
+        self.mouse_pos = [0, 0]
 
         #Stores the x and y of the tile that the mouse is over, or -1 if mouse is not over the grid
         self.mouse_tile = [-1, -1]
@@ -87,6 +88,9 @@ class Level(Scene):
 
         #Stores waves that are in the process of spawning
         self.current_waves = []
+
+        #Changes to True when player wins the level
+        self.won = False
 
         #Level background image is blitted to the scene
         self.game["display"].blit(self.bg, (0, 0))
@@ -253,7 +257,15 @@ class Level(Scene):
             wave_count = -1
         else:
             wave_count = self.waves[self.wave_no + 1]["count"]
-        self.next_wave_btn.update(self.mouse_pos, self.selected, wave_count)
+
+        if self.wave_no == len(self.waves) - 1:
+            time_left = -1
+        elif self.waves[self.wave_no + 1]["time"] == -1:
+            time_left = -1
+        else:
+            time_left = math.ceil((self.waves[self.wave_no + 1]["time"]*60 - self.next_wave_timer) / 60)
+        
+        self.next_wave_btn.update(self.mouse_pos, self.selected, wave_count, time_left)
 
         #Every tile in the grid is updated
         for row in self.grid:
@@ -302,7 +314,7 @@ class Level(Scene):
             current_wave["timer"] += 1
 
             #Next enemies are spawned one every second (60 frames)
-            if current_wave["timer"] == 60:
+            if current_wave["timer"] == 60 and current_wave["info"]["count"] > 1:
                 self.enemies.append(Enemy(self.game, current_wave["info"]["type"], self.start_tiles[current_wave["info"]["starttile"]], self.end_tile))
                 current_wave["spawned"] += 1
 
@@ -312,10 +324,29 @@ class Level(Scene):
 
                 current_wave["timer"] = 0
 
+        #Next wave automatically starts when time is up
+        self.next_wave_timer += 1
+
+        if self.wave_no != len(self.waves) - 1:
+            if self.next_wave_timer == self.waves[self.wave_no + 1]["time"] * 60:
+                self.start_next_wave()
+
+        #Checks if level has been won
+        enemies_alive = False
+        for enemy in self.enemies:
+            if enemy.alive:
+                enemies_alive = True
+        
+        if self.wave_no == len(self.waves) - 1 and not enemies_alive:
+            self.won = True
+
 
     def start_next_wave(self):
         #Starts the next wave of enemies
         self.wave_no += 1
+
+        if not "starttile" in self.waves[self.wave_no]:
+            self.waves[self.wave_no]["starttile"] = 0
 
         #New wave is added to currently spawning waves
         self.current_waves.append({
@@ -330,6 +361,9 @@ class Level(Scene):
         #Otherwise it is set to display whatever wave is next
         else:
             self.next_wave_btn.set_type("nextwave" + self.waves[self.wave_no + 1]["type"])
+
+        #Next wave timer is reset
+        self.next_wave_timer = 0
 
     
     def is_path(self, start, new_tower):

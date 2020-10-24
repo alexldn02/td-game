@@ -21,14 +21,14 @@ level_data = [
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
         ],
         "waves":[
-            {"type": "heavy", "count": 100, "starttile": 0},
-            {"type": "light", "count": 5, "starttile": 0},
-            {"type": "light", "count": 10, "starttile": 1},
-            {"type": "medium", "count": 5, "starttile": 0},
-            {"type": "medium", "count": 10, "starttile": 1},
-            {"type": "light", "count": 20, "starttile": 0},
-            {"type": "heavy", "count": 5, "starttile": 1},
-            {"type": "light", "count": 100, "starttile": 0}
+            {"type": "heavy", "count": 1, "starttile": 0, "time": -1},
+            {"type": "light", "count": 5, "starttile": 0, "time": 10},
+            {"type": "light", "count": 10, "starttile": 1, "time": 15},
+            {"type": "medium", "count": 5, "starttile": 0, "time": 20},
+            {"type": "medium", "count": 10, "starttile": 1, "time": 20},
+            {"type": "light", "count": 20, "starttile": 0, "time": 20},
+            {"type": "heavy", "count": 5, "starttile": 1, "time": 20},
+            {"type": "light", "count": 100, "starttile": 0, "time": 20}
             ]
     },
 
@@ -53,11 +53,11 @@ level_data = [
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
         ],
         "waves":[
-            {"type": "light", "count": 2, "starttile": 0},
-            {"type": "light", "count": 5, "starttile": 0},
-            {"type": "light", "count": 7, "starttile": 0},
-            {"type": "light", "count": 10, "starttile": 0},
-            {"type": "light", "count": 15, "starttile": 0}]
+            {"type": "light", "count": 2, "time": -1},
+            {"type": "light", "count": 5, "time": 30},
+            {"type": "light", "count": 7, "time": 30},
+            {"type": "light", "count": 10, "time": 30},
+            {"type": "light", "count": 15, "time": 30}]
     },
 
     {
@@ -81,11 +81,11 @@ level_data = [
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
         ],
         "waves":[
-            {"type": "light", "count": 5, "starttile": 0},
-            {"type": "light", "count": 8, "starttile": 0},
-            {"type": "medium", "count": 5, "starttile": 0},
-            {"type": "light", "count": 15, "starttile": 0},
-            {"type": "medium", "count": 8, "starttile": 0},
+            {"type": "light", "count": 5, "time": -1},
+            {"type": "light", "count": 8, "time": 25},
+            {"type": "medium", "count": 5, "time": 25},
+            {"type": "light", "count": 15, "time": 20},
+            {"type": "medium", "count": 8, "time": 30},
             ]
     }
     ]

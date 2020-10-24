@@ -6,8 +6,8 @@ class Button:
         self.game = game
 
         self.stats_font = pygame.font.Font("./assets/font.ttf", 16)
-        self.time_left_font = pygame.font.Font("./assets/font.ttf", 25)
-        self.enemy_count_font = pygame.font.Font("./assets/font.ttf", 25)
+        self.time_left_font = pygame.font.Font("./assets/font.ttf", 24)
+        self.enemy_count_font = pygame.font.Font("./assets/font.ttf", 24)
 
         self.set_type(type)
 
@@ -88,16 +88,17 @@ class Button:
             return False
 
 
-    def update(self, mouse_pos, selected, count = -1):
+    def update(self, mouse_pos, selected, count = -1, time_left = -1):
         #Blits sprite
         self.game["display"].blit(self.sprite, (self.bounds[0][0], self.bounds[1][0]))
 
         #Blits text if next wave
-        #if self.type == "nextwavelight" or self.type == "nextwavemedium" or self.type == "nextwaveheavy":            
-
         if self.type == "nextwavelight" or self.type == "nextwavemedium" or self.type == "nextwaveheavy":
-            #time_left_text = self.time_left_font.render(str(time_left), True, (115,113,102))
-            #self.game["display"].blit(time_left_text, (96, 839))
+
+            if not time_left == -1:
+                time_left_text = self.time_left_font.render(str(time_left), True, (115,113,102))
+
+                self.game["display"].blit(time_left_text, (94, 840))
 
             enemy_count_text = self.enemy_count_font.render(str(count), True, (0,0,0))
 
