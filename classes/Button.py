@@ -5,6 +5,7 @@ class Button:
     def __init__(self, game, type):
         self.game = game
 
+        self.stats_font = pygame.font.Font("./assets/font.ttf", 16)
         self.time_left_font = pygame.font.Font("./assets/font.ttf", 25)
         self.enemy_count_font = pygame.font.Font("./assets/font.ttf", 25)
 
@@ -23,6 +24,11 @@ class Button:
         self.disabled_rect = pygame.Surface(size)
         self.disabled_rect.set_alpha(64)
         self.disabled_rect.fill((0,0,0))
+
+        self.damage_icon = pygame.image.load("./assets/icondamage.png")
+        self.fire_rate_icon = pygame.image.load("./assets/iconfirerate.png")
+        self.range_icon = pygame.image.load("./assets/iconrange.png")
+        self.fire_damage_icon = pygame.image.load("./assets/iconfiredamage.png")
 
     
     def set_type(self, type):
@@ -45,16 +51,16 @@ class Button:
             self.bounds = [[35, 345], [375, 485]]
             self.sprite = pygame.image.load("./assets/createsniperbtn.png")
 
-        elif self.type == "createincendiary":
+        elif self.type == "createflame":
             self.bounds = [[35, 345], [505, 615]]
-            self.sprite = pygame.image.load("./assets/createincendiarybtn.png")
+            self.sprite = pygame.image.load("./assets/createflamebtn.png")
 
         elif self.type == "upgradetower":
-            self.bounds = [[35, 180], [635, 745]]
+            self.bounds = [[35, 235], [635, 745]]
             self.sprite = pygame.image.load("./assets/upgradetowerbtn.png")
 
         elif self.type == "deletetower":
-            self.bounds = [[200, 345], [635, 745]]
+            self.bounds = [[255, 345], [635, 745]]
             self.sprite = pygame.image.load("./assets/deletetowerbtn.png")
 
         elif self.type == "nextwavelight":
@@ -87,8 +93,7 @@ class Button:
         self.game["display"].blit(self.sprite, (self.bounds[0][0], self.bounds[1][0]))
 
         #Blits text if next wave
-        #if self.type == "nextwavelight" or self.type == "nextwavemedium" or self.type == "nextwaveheavy":
-            
+        #if self.type == "nextwavelight" or self.type == "nextwavemedium" or self.type == "nextwaveheavy":            
 
         if self.type == "nextwavelight" or self.type == "nextwavemedium" or self.type == "nextwaveheavy":
             #time_left_text = self.time_left_font.render(str(time_left), True, (115,113,102))

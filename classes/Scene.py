@@ -1,5 +1,4 @@
 import pygame
-import datetime
 
 #Generic Scene class, all game scenes will be children of this class
 class Scene:
@@ -10,16 +9,18 @@ class Scene:
 
 
     def do_loop(self):
-        #While loop to update the game rapidly that stops if the user quits the game
-        stopped = False
+        
+        self.stopped = False
 
-        while not stopped:
+        #While loop to update the scene rapidly
+        while not self.stopped:
             #Iterates through every event recieved from pygame
             for self.event in pygame.event.get():
 
-                #Causes loop to stop if game is exited
+                #IF player clicks "x" button program quits
                 if self.event.type == pygame.QUIT:
-                    stopped = True
+                    pygame.quit()
+                    quit()
 
                 #Performs event checks found in child classes
                 self.do_events()

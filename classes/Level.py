@@ -56,7 +56,7 @@ class Level(Scene):
 
         self.wave_no = -1
 
-        #Money value is set to whatever it is defined as for the particular level
+        #Money value is set to whatever initial value it is defined as for the particular level
         self.money = self.level_data["startmoney"]
 
         #Health is set to max
@@ -67,29 +67,29 @@ class Level(Scene):
         self.create_basic_btn = Button(self.game, "createbasic")
         self.create_splash_btn = Button(self.game, "createsplash")
         self.create_sniper_btn = Button(self.game, "createsniper")
-        self.create_incendiary_btn = Button(self.game, "createincendiary")
+        self.create_flame_btn = Button(self.game, "createflame")
         self.upgrade_tower_btn = Button(self.game, "upgradetower")
         self.delete_tower_btn = Button(self.game, "deletetower")
         self.next_wave_btn = Button(self.game, "nextwave" + self.waves[0]["type"])
 
-        #Stores which option on the left of the grid has been selected, defaults to None
+        #Stores what is currently selected by the player
+        #Either holds a string representing a button, a tuple representing a tile in the grid, or None
         self.selected = None
 
         #Stores the position of the mouse in an array
-        self.mouse_pos = pygame.mouse.get_pos()
+        self.mouse_pos = []
 
         #Stores the x and y of the tile that the mouse is over, or -1 if mouse is not over the grid
         self.mouse_tile = [-1, -1]
-        
-        #Level background image is blitted to the scene
-        self.game["display"].blit(self.bg, (0, 0))
 
         #Timers are set to 0
-        self.enemy_spawn_timer = 0
         self.next_wave_timer = 0
 
-        self.enemies_spawning = False
-        self.enemies_spawned = 0
+        #Stores waves that are in the process of spawning
+        self.current_waves = []
+
+        #Level background image is blitted to the scene
+        self.game["display"].blit(self.bg, (0, 0))
 
         #Starts loop from method found in parent Scene class
         self.do_loop()
@@ -144,23 +144,30 @@ class Level(Scene):
                         elif self.selected == "createsplash":
                             self.grid[x][y] = Tower(self.game, "splash", (x, y))
                             self.selected = None
-                            self.money -= 100
+                            self.money -= 120
 
                         elif self.selected == "createsniper":
                             self.grid[x][y] = Tower(self.game, "sniper", (x, y))
                             self.selected = None
-                            self.money -= 100
+                            self.money -= 140
 
-                        elif self.selected == "createincendiary":
-                            self.grid[x][y] = Tower(self.game, "incendiary", (x, y))
+                        elif self.selected == "createflame":
+                            self.grid[x][y] = Tower(self.game, "flame", (x, y))
                             self.selected = None
-                            self.money -= 100
+                            self.money -= 160
+
+                        else:
+                            self.selected = None
 
                 elif isinstance(self.grid[x][y], Tower):
                     if self.selected == (x, y):
                         self.selected = None
                     else:
                         self.selected = (x, y)
+
+                else:
+                    self.selected = None
+                
 
             #If mouse clicks, not within grid
             else:
@@ -172,36 +179,42 @@ class Level(Scene):
                     else:
                         self.selected = "createbasic"
 
-                elif self.create_splash_btn.within_bounds(self.mouse_pos) and self.money >= 100:
+                elif self.create_splash_btn.within_bounds(self.mouse_pos) and self.money >= 120:
                     if self.selected == "createsplash":
                         self.selected = None
                     else:
                         self.selected = "createsplash"
 
-                elif self.create_sniper_btn.within_bounds(self.mouse_pos) and self.money >= 100:
+                elif self.create_sniper_btn.within_bounds(self.mouse_pos) and self.money >= 140:
                     if self.selected == "createsniper":
                         self.selected = None
                     else:
                         self.selected = "createsniper"
 
-                elif self.create_incendiary_btn.within_bounds(self.mouse_pos) and self.money >= 100:
-                    if self.selected == "createincendiary":
+                elif self.create_flame_btn.within_bounds(self.mouse_pos) and self.money >= 160:
+                    if self.selected == "createflame":
                         self.selected = None
                     else:
-                        self.selected = "createincendiary"
+                        self.selected = "createflame"
 
-                elif self.upgrade_tower_btn.within_bounds(self.mouse_pos) and type(self.selected) == tuple and self.money >= 100:
+                elif self.upgrade_tower_btn.within_bounds(self.mouse_pos) and type(self.selected) == tuple and self.money >= 50:
                     if self.grid[self.selected[0]][self.selected[1]].level < 10:
                         self.grid[self.selected[0]][self.selected[1]].level_up()
-                        self.money -= 100
+                        self.money -= 50
 
                 elif self.delete_tower_btn.within_bounds(self.mouse_pos) and type(self.selected) == tuple:
                     self.grid[self.selected[0]][self.selected[1]] = GridTile(self.game, "empty", self.selected)
                     self.selected = None
 
-                #If player clicks "next wave" and there are waves remaining and enemy spawning is not occurring
-                elif self.next_wave_btn.within_bounds(self.mouse_pos) and self.wave_no < len(self.waves) - 1 and not self.enemies_spawning:
+                #If player clicks "next wave" and there are waves remaining
+                elif self.next_wave_btn.within_bounds(self.mouse_pos) and self.wave_no < len(self.waves) - 1:
                     self.start_next_wave()
+
+                elif self.back_btn.within_bounds(self.mouse_pos):
+                    self.stopped = True
+
+                else:
+                    self.selected = None
                     
         if self.event.type == pygame.KEYUP:
             if self.event.key == pygame.K_ESCAPE:
@@ -214,7 +227,7 @@ class Level(Scene):
         #Health bar is updated
         if self.health < 0:
             self.health = 0
-        pygame.draw.rect(self.game["display"], (255, 255, 255), (60, 25, 225, 15))
+        pygame.draw.rect(self.game["display"], (64, 53, 41), (60, 25, 225, 15))
         pygame.draw.rect(self.game["display"], (197, 9, 9), (60, 25, self.health * 2.25, 15))
 
         #Money display is updated
@@ -229,7 +242,7 @@ class Level(Scene):
         self.create_basic_btn.update(self.mouse_pos, self.selected)
         self.create_splash_btn.update(self.mouse_pos, self.selected)
         self.create_sniper_btn.update(self.mouse_pos, self.selected)
-        self.create_incendiary_btn.update(self.mouse_pos, self.selected)
+        self.create_flame_btn.update(self.mouse_pos, self.selected)
 
         #Tower action buttons are updated
         self.upgrade_tower_btn.update(self.mouse_pos, self.selected)
@@ -279,32 +292,37 @@ class Level(Scene):
             if enemy.alive:
                 enemy.update_health_bar()
 
-        #If process of spawning enemies is underway
-        if self.enemies_spawning:
+        #For every wave that is currently spawning
+        for current_wave in self.current_waves:
             #First enemy is spawned immediately
-            if self.enemies_spawned == 0:
-                self.enemies.append(Enemy(self.game, self.current_wave["type"], self.start_tiles[self.current_wave["starttile"]], self.end_tile))
-                self.enemies_spawned += 1
+            if current_wave["spawned"] == 0:
+                self.enemies.append(Enemy(self.game, current_wave["info"]["type"], self.start_tiles[current_wave["info"]["starttile"]], self.end_tile))
+                current_wave["spawned"] += 1
 
-            self.enemy_spawn_timer += 1
+            current_wave["timer"] += 1
 
             #Next enemies are spawned one every second (60 frames)
-            if self.enemy_spawn_timer == 60:
-                self.enemies.append(Enemy(self.game, self.current_wave["type"], self.start_tiles[self.current_wave["starttile"]], self.end_tile))
-                self.enemies_spawned += 1
+            if current_wave["timer"] == 60:
+                self.enemies.append(Enemy(self.game, current_wave["info"]["type"], self.start_tiles[current_wave["info"]["starttile"]], self.end_tile))
+                current_wave["spawned"] += 1
 
-                if self.enemies_spawned == self.current_wave["count"]:
-                    self.enemies_spawning = False
-                    self.enemies_spawned = 0
+                if current_wave["spawned"] == current_wave["info"]["count"]:
+                    self.current_waves.remove(current_wave)
+                    current_wave["spawned"] = 0
 
-                self.enemy_spawn_timer = 0
+                current_wave["timer"] = 0
 
 
     def start_next_wave(self):
         #Starts the next wave of enemies
         self.wave_no += 1
-        #Current wave is updated
-        self.current_wave = self.waves[self.wave_no]
+
+        #New wave is added to currently spawning waves
+        self.current_waves.append({
+            "info": self.waves[self.wave_no],
+            "spawned": 0,
+            "timer": 0
+        })
 
         #If the wave begun is the last wave, next wave button is set to no new waves type
         if self.wave_no == len(self.waves) - 1:
@@ -312,9 +330,6 @@ class Level(Scene):
         #Otherwise it is set to display whatever wave is next
         else:
             self.next_wave_btn.set_type("nextwave" + self.waves[self.wave_no + 1]["type"])
-
-        #Process of spawning enemies begins
-        self.enemies_spawning = True
 
     
     def is_path(self, start, new_tower):
