@@ -79,6 +79,10 @@ class Button:
             self.bounds = [[35, 345], [775, 925]]
             self.sprite = pygame.image.load("./assets/nextwavenonebtn.png")
 
+        elif self.type == "play":
+            self.bounds = [[130, 490], [720, 830]]
+            self.sprite = pygame.image.load("./assets/playbtn.png")
+
 
     def within_bounds(self, mouse_pos):
         #Returns true if mouse is over button

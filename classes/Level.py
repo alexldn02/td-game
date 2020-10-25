@@ -78,13 +78,14 @@ class Level(Scene):
         self.selected = None
 
         #Stores the position of the mouse in an array
-        self.mouse_pos = [0, 0]
+        self.mouse_pos = pygame.mouse.get_pos()
 
         #Stores the x and y of the tile that the mouse is over, or -1 if mouse is not over the grid
         self.mouse_tile = [-1, -1]
 
         #Timers are set to 0
         self.next_wave_timer = 0
+        self.level_end_timer = 0
 
         #Stores waves that are in the process of spawning
         self.current_waves = []
@@ -338,7 +339,11 @@ class Level(Scene):
                 enemies_alive = True
         
         if self.wave_no == len(self.waves) - 1 and not enemies_alive:
-            self.won = True
+            #Waits 2 seconds, then level ends
+            if self.level_end_timer == 120 and not self.won:
+                self.won = True
+            else:
+                self.level_end_timer += 1
 
 
     def start_next_wave(self):
