@@ -6,7 +6,8 @@ from .Button import Button
 class TitleScene(Scene):
 
     def __init__(self, game):
-        super().__init__(game)
+        
+        self.game = game
 
         self.bg = pygame.image.load("./assets/titlebg.png")
 

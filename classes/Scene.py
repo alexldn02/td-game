@@ -3,11 +3,6 @@ import pygame
 #Generic Scene class, all game scenes will be children of this class
 class Scene:
 
-    def __init__(self, game):
-
-        self.game = game
-
-
     def do_loop(self):
         
         self.stopped = False

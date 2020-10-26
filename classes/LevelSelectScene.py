@@ -7,7 +7,8 @@ from .Button import Button
 class LevelSelectScene(Scene):
 
     def __init__(self, game):
-        super().__init__(game)
+
+        self.game = game
 
         self.testlevel = Level(game, level_data[0])
 
@@ -37,7 +38,7 @@ class LevelSelectScene(Scene):
                 if self.back_btn.within_bounds(self.mouse_pos):
                     self.stopped = True
                 else:
-                    self.testlevel.start()
+                    self.level1.start()
                     self.start()
     
     def do_updates(self):

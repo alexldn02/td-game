@@ -6,12 +6,16 @@ from .GridTile import GridTile
 from .Tower import Tower
 from .Enemy import Enemy
 from .Button import Button
+from .UpgradeButton import UpgradeButton
+from .NextWaveButton import NextWaveButton
+from .CreateTowerButton import CreateTowerButton
 
 #Level class that inherits Scene where most of the games code will be
 class Level(Scene):
 
     def __init__(self, game, level_data):
-        super().__init__(game)
+        
+        self.game = game
 
         self.level_data = level_data
 
@@ -65,13 +69,17 @@ class Level(Scene):
 
         #Buttons are instantiated
         self.back_btn = Button(self.game, "back")
-        self.create_basic_btn = Button(self.game, "createbasic")
-        self.create_splash_btn = Button(self.game, "createsplash")
-        self.create_sniper_btn = Button(self.game, "createsniper")
-        self.create_flame_btn = Button(self.game, "createflame")
-        self.upgrade_tower_btn = Button(self.game, "upgradetower")
+
+        self.create_basic_btn = CreateTowerButton(self.game, "basic")
+        self.create_splash_btn = CreateTowerButton(self.game, "splash")
+        self.create_sniper_btn = CreateTowerButton(self.game, "sniper")
+        self.create_flame_btn = CreateTowerButton(self.game, "flame")
+
+        self.upgrade_tower_btn = UpgradeButton(self.game)
+
         self.delete_tower_btn = Button(self.game, "deletetower")
-        self.next_wave_btn = Button(self.game, "nextwave" + self.waves[0]["type"])
+
+        self.next_wave_btn = NextWaveButton(self.game, self.waves[0]["type"])
 
         #Stores what is currently selected by the player
         #Either holds a string representing a button, a tuple representing a tile in the grid, or None
@@ -250,7 +258,11 @@ class Level(Scene):
         self.create_flame_btn.update(self.mouse_pos, self.selected)
 
         #Tower action buttons are updated
-        self.upgrade_tower_btn.update(self.mouse_pos, self.selected)
+        if type(self.selected) == tuple:
+            self.upgrade_tower_btn.update(self.mouse_pos, self.grid[self.selected[0]][self.selected[1]], self.money)
+        else:
+            self.upgrade_tower_btn.update(self.mouse_pos, None, self.money)
+
         self.delete_tower_btn.update(self.mouse_pos, self.selected)
 
         #Next wave button is updated
@@ -266,7 +278,7 @@ class Level(Scene):
         else:
             time_left = math.ceil((self.waves[self.wave_no + 1]["time"]*60 - self.next_wave_timer) / 60)
         
-        self.next_wave_btn.update(self.mouse_pos, self.selected, wave_count, time_left)
+        self.next_wave_btn.update(self.mouse_pos, wave_count, time_left)
 
         #Every tile in the grid is updated
         for row in self.grid:
@@ -362,10 +374,10 @@ class Level(Scene):
 
         #If the wave begun is the last wave, next wave button is set to no new waves type
         if self.wave_no == len(self.waves) - 1:
-            self.next_wave_btn.set_type("wavesend")
+            self.next_wave_btn.set_type("none")
         #Otherwise it is set to display whatever wave is next
         else:
-            self.next_wave_btn.set_type("nextwave" + self.waves[self.wave_no + 1]["type"])
+            self.next_wave_btn.set_type(self.waves[self.wave_no + 1]["type"])
 
         #Next wave timer is reset
         self.next_wave_timer = 0
