@@ -98,8 +98,8 @@ class Level(Scene):
         #Stores waves that are in the process of spawning
         self.current_waves = []
 
-        #Changes to True when player wins the level
-        self.won = False
+        #Changes to True when player wins or loses the level
+        self.ended = False
 
         #Level background image is blitted to the scene
         self.game["display"].blit(self.bg, (0, 0))
@@ -114,19 +114,19 @@ class Level(Scene):
 
             #Every time the mouse is moved its position is tracked
             self.mouse_pos = pygame.mouse.get_pos()
-            
-            #If mouse coords are within grid
-            if self.mouse_pos[0] >= 435 and self.mouse_pos[0] < 1235 and self.mouse_pos[1] >= 115 and self.mouse_pos[1] < 915:
-                #Calculates which tile of the grid the mouse is hovered over
-                tile_x = (self.mouse_pos[0] - 435) // 50
-                tile_y = (self.mouse_pos[1] - 115) // 50
-                self.mouse_tile = [tile_x, tile_y]
-            else:
-                #Position is stored as -1 if mouse is not over the grid
-                self.mouse_tile = [-1, -1]
 
+            if not self.ended:
+                #If mouse coords are within grid
+                if self.mouse_pos[0] >= 435 and self.mouse_pos[0] < 1235 and self.mouse_pos[1] >= 115 and self.mouse_pos[1] < 915:
+                    #Calculates which tile of the grid the mouse is hovered over
+                    tile_x = (self.mouse_pos[0] - 435) // 50
+                    tile_y = (self.mouse_pos[1] - 115) // 50
+                    self.mouse_tile = [tile_x, tile_y]
+                else:
+                    #Position is stored as -1 if mouse is not over the grid
+                    self.mouse_tile = [-1, -1]
  
-        if self.event.type == pygame.MOUSEBUTTONUP:
+        if self.event.type == pygame.MOUSEBUTTONUP and not self.ended:
 
             #If mouse clicks and is within grid
             if self.mouse_tile != [-1, -1]:
@@ -171,6 +171,9 @@ class Level(Scene):
 
                         else:
                             self.selected = None
+                    
+                    elif type(self.selected) == tuple:
+                        self.selected = None
 
                 elif isinstance(self.grid[x][y], Tower):
                     if self.selected == (x, y):
@@ -210,10 +213,12 @@ class Level(Scene):
                     else:
                         self.selected = "createflame"
 
-                elif self.upgrade_tower_btn.within_bounds(self.mouse_pos) and type(self.selected) == tuple and self.money >= 50:
-                    if self.grid[self.selected[0]][self.selected[1]].level < 10:
-                        self.grid[self.selected[0]][self.selected[1]].level_up()
-                        self.money -= 50
+                elif self.upgrade_tower_btn.within_bounds(self.mouse_pos) and type(self.selected) == tuple:
+                    tower_selected = self.grid[self.selected[0]][self.selected[1]]
+                    if tower_selected.level < 10 and tower_selected.upgrade_cost <= self.money:
+                        self.money -= tower_selected.upgrade_cost
+                        tower_selected.level_up()
+
 
                 elif self.delete_tower_btn.within_bounds(self.mouse_pos) and type(self.selected) == tuple:
                     self.grid[self.selected[0]][self.selected[1]] = GridTile(self.game, "empty", self.selected)
@@ -228,134 +233,155 @@ class Level(Scene):
 
                 else:
                     self.selected = None
-                    
-        if self.event.type == pygame.KEYUP:
+
+        #If player clicks after level is complete
+        elif self.event.type == pygame.MOUSEBUTTONUP:
+            #Clicks on return button
+            if self.return_btn.within_bounds(self.mouse_pos):
+                #Level while loop ends and so game returns to LevelSelectScene
+                self.stopped = True
+            
+            elif self.retry_btn.within_bounds(self.mouse_pos):
+                self.stopped = True
+                self.start()
+            
+        if self.event.type == pygame.KEYUP and not self.ended:
             if self.event.key == pygame.K_ESCAPE:
                 self.selected = None
 
+
     def do_updates(self):
-        #After events are handled, all objects are updated
-        #Sprites/shapes at the back of the scene have to be updated first and sprites/shapes at the front last
-
-        #Health bar is updated
-        if self.health < 0:
-            self.health = 0
-        pygame.draw.rect(self.game["display"], (64, 53, 41), (60, 25, 225, 15))
-        pygame.draw.rect(self.game["display"], (197, 9, 9), (60, 25, self.health * 2.25, 15))
-
-        #Money display is updated
-        pygame.draw.rect(self.game["display"], (219, 178, 111), (60, 65, 85, 25))
-        money_text = self.font.render(str(self.money), True, (0,0,0))
-        self.game["display"].blit(money_text, (64, 67))
         
-        #Back button is updated
-        self.back_btn.update(self.mouse_pos, self.selected)
+        if not self.ended:
+            #After events are handled, all objects are updated
+            #Sprites/shapes at the back of the scene have to be updated first and sprites/shapes at the front last
 
-        #Tower create buttons are updated
-        self.create_basic_btn.update(self.mouse_pos, self.selected)
-        self.create_splash_btn.update(self.mouse_pos, self.selected)
-        self.create_sniper_btn.update(self.mouse_pos, self.selected)
-        self.create_flame_btn.update(self.mouse_pos, self.selected)
-
-        #Tower action buttons are updated
-        if type(self.selected) == tuple:
-            self.upgrade_tower_btn.update(self.mouse_pos, self.grid[self.selected[0]][self.selected[1]], self.money)
-        else:
-            self.upgrade_tower_btn.update(self.mouse_pos, None, self.money)
-
-        self.delete_tower_btn.update(self.mouse_pos, self.selected)
-
-        #Next wave button is updated
-        if self.wave_no == len(self.waves) - 1:
-            wave_count = -1
-        else:
-            wave_count = self.waves[self.wave_no + 1]["count"]
-
-        if self.wave_no == len(self.waves) - 1:
-            time_left = -1
-        elif self.waves[self.wave_no + 1]["time"] == -1:
-            time_left = -1
-        else:
-            time_left = math.ceil((self.waves[self.wave_no + 1]["time"]*60 - self.next_wave_timer) / 60)
-        
-        self.next_wave_btn.update(self.mouse_pos, wave_count, time_left)
-
-        #Every tile in the grid is updated
-        for row in self.grid:
-            for tile in row:
-                #If the tile is a tower, enemies array is also given as an argument
-                if isinstance(tile, Tower):
-                    tile.update(self.mouse_tile, self.selected, self.enemies)
-                else:
-                    tile.update(self.mouse_tile)
-
-        #Tower attack animations are updated
-        for row in self.grid:
-            for tile in row:
-                #If the tile is a tower
-                if isinstance(tile, Tower):
-                    if tile.agro:
-                        tile.update_attack_anim()
-
-        #All enemies are updated
-        for enemy in self.enemies:
-            if enemy.damaging:
-                self.health -= enemy.damage
-                enemy.damaging = False
-            #Only live enemies are rendered
-            if enemy.alive:
-                #If enemy has finished a movement, it immediately performs the next
-                if enemy.moved:
-                    enemy.move(self.grid)
-                enemy.update()
-            elif enemy.to_reward:
-                self.money += enemy.reward
-                enemy.to_reward = False
-
-        #Health bars of enemies are updated after enemies so that they are blitted in front
-        for enemy in self.enemies:
-            if enemy.alive:
-                enemy.update_health_bar()
-
-        #For every wave that is currently spawning
-        for current_wave in self.current_waves:
-            #First enemy is spawned immediately
-            if current_wave["spawned"] == 0:
-                self.enemies.append(Enemy(self.game, current_wave["info"]["type"], self.start_tiles[current_wave["info"]["starttile"]], self.end_tile))
-                current_wave["spawned"] += 1
-
-            current_wave["timer"] += 1
-
-            #Next enemies are spawned one every second (60 frames)
-            if current_wave["timer"] == 60 and current_wave["info"]["count"] > 1:
-                self.enemies.append(Enemy(self.game, current_wave["info"]["type"], self.start_tiles[current_wave["info"]["starttile"]], self.end_tile))
-                current_wave["spawned"] += 1
-
-                if current_wave["spawned"] == current_wave["info"]["count"]:
-                    self.current_waves.remove(current_wave)
-                    current_wave["spawned"] = 0
-
-                current_wave["timer"] = 0
-
-        #Next wave automatically starts when time is up
-        self.next_wave_timer += 1
-
-        if self.wave_no != len(self.waves) - 1:
-            if self.next_wave_timer == self.waves[self.wave_no + 1]["time"] * 60:
-                self.start_next_wave()
-
-        #Checks if level has been won
-        enemies_alive = False
-        for enemy in self.enemies:
-            if enemy.alive:
-                enemies_alive = True
-        
-        if self.wave_no == len(self.waves) - 1 and not enemies_alive:
-            #Waits 2 seconds, then level ends
-            if self.level_end_timer == 120 and not self.won:
-                self.won = True
+            #Health bar is updated
+            pygame.draw.rect(self.game["display"], (64, 53, 41), (60, 25, 225, 15))
+            if self.health > 0:
+                pygame.draw.rect(self.game["display"], (197, 9, 9), (60, 25, self.health * 2.25, 15))
             else:
-                self.level_end_timer += 1
+                self.end(False)
+                return
+
+            #Money display is updated
+            pygame.draw.rect(self.game["display"], (219, 178, 111), (60, 65, 85, 25))
+            money_text = self.font.render(str(self.money), True, (0,0,0))
+            self.game["display"].blit(money_text, (64, 67))
+            
+            #Back button is updated
+            self.back_btn.update(self.mouse_pos, self.selected)
+
+            #Tower create buttons are updated
+            self.create_basic_btn.update(self.mouse_pos, self.selected, self.money)
+            self.create_splash_btn.update(self.mouse_pos, self.selected, self.money)
+            self.create_sniper_btn.update(self.mouse_pos, self.selected, self.money)
+            self.create_flame_btn.update(self.mouse_pos, self.selected, self.money)
+
+            #Tower upgrade button is updated
+            if type(self.selected) == tuple:
+                self.upgrade_tower_btn.update(self.mouse_pos, self.grid[self.selected[0]][self.selected[1]], self.money)
+            else:
+                self.upgrade_tower_btn.update(self.mouse_pos, None, self.money)
+
+            #Tower delete button is updated
+            self.delete_tower_btn.update(self.mouse_pos, self.selected)
+
+            #Next wave button is updated
+            if self.wave_no == len(self.waves) - 1:
+                wave_count = -1
+            else:
+                wave_count = self.waves[self.wave_no + 1]["count"]
+
+            if self.wave_no == len(self.waves) - 1:
+                time_left = -1
+            elif self.waves[self.wave_no + 1]["time"] == -1:
+                time_left = -1
+            else:
+                time_left = math.ceil((self.waves[self.wave_no + 1]["time"]*60 - self.next_wave_timer) / 60)
+            
+            self.next_wave_btn.update(self.mouse_pos, wave_count, time_left)
+
+            #Every tile in the grid is updated
+            for row in self.grid:
+                for tile in row:
+                    #If the tile is a tower, enemies array is also given as an argument
+                    if isinstance(tile, Tower):
+                        tile.update(self.mouse_tile, self.selected, self.enemies)
+                    else:
+                        tile.update(self.mouse_tile)
+
+            #Tower attack animations are updated
+            for row in self.grid:
+                for tile in row:
+                    #If the tile is a tower
+                    if isinstance(tile, Tower):
+                        if tile.agro:
+                            tile.update_attack_anim()
+
+            #All enemies are updated
+            for enemy in self.enemies:
+                if enemy.damaging:
+                    self.health -= enemy.damage
+                    enemy.damaging = False
+                #Only live enemies are rendered
+                if enemy.alive:
+                    #If enemy has finished a movement, it immediately performs the next
+                    if enemy.moved:
+                        enemy.move(self.grid)
+                    enemy.update()
+                elif enemy.to_reward:
+                    self.money += enemy.reward
+                    enemy.to_reward = False
+
+            #Health bars of enemies are updated after enemies so that they are blitted in front
+            for enemy in self.enemies:
+                if enemy.alive:
+                    enemy.update_health_bar()
+
+            #For every wave that is currently spawning
+            for current_wave in self.current_waves:
+                #First enemy is spawned immediately
+                if current_wave["spawned"] == 0:
+                    self.enemies.append(Enemy(self.game, current_wave["info"]["type"], self.start_tiles[current_wave["info"]["starttile"]], self.end_tile))
+                    current_wave["spawned"] += 1
+
+                current_wave["timer"] += 1
+
+                #Next enemies are spawned one every second (60 frames)
+                if current_wave["timer"] == 60 and current_wave["info"]["count"] > 1:
+                    self.enemies.append(Enemy(self.game, current_wave["info"]["type"], self.start_tiles[current_wave["info"]["starttile"]], self.end_tile))
+                    current_wave["spawned"] += 1
+
+                    if current_wave["spawned"] == current_wave["info"]["count"]:
+                        self.current_waves.remove(current_wave)
+                        current_wave["spawned"] = 0
+
+                    current_wave["timer"] = 0
+
+            #Next wave automatically starts when time is up
+            self.next_wave_timer += 1
+
+            if self.wave_no != len(self.waves) - 1:
+                if self.next_wave_timer == self.waves[self.wave_no + 1]["time"] * 60:
+                    self.start_next_wave()
+
+            #Checks if level has been won
+            enemies_alive = False
+            for enemy in self.enemies:
+                if enemy.alive:
+                    enemies_alive = True
+            
+            if self.wave_no == len(self.waves) - 1 and not enemies_alive:
+                #Waits 2 seconds, then level ends
+                if self.level_end_timer == 120:
+                    self.end(True)
+                else:
+                    self.level_end_timer += 1
+
+        else:
+            self.return_btn.update(self.mouse_pos, self.selected)
+            self.retry_btn.update(self.mouse_pos, self.selected)
 
 
     def start_next_wave(self):
@@ -381,6 +407,41 @@ class Level(Scene):
 
         #Next wave timer is reset
         self.next_wave_timer = 0
+
+
+    def end(self, won):
+
+        self.ended = True
+
+        dark_bg = pygame.Surface((1280, 960))
+        dark_bg.set_alpha(128)
+        dark_bg.fill((0,0,0))
+        self.game["display"].blit(dark_bg, (0, 0))
+
+        if won:
+            sprite = pygame.image.load("./assets/levelcomplete.png")
+        else:
+            sprite = pygame.image.load("./assets/levelfailed.png")
+        
+        self.game["display"].blit(sprite, (220, 240))
+
+        self.return_btn = Button(self.game, "return")
+        self.retry_btn = Button(self.game, "retry")
+
+        if won:
+            star = pygame.image.load("./assets/star.png")
+
+            if self.health == 100:
+                self.stars = 3
+                self.game["display"].blit(star, (700, 455))
+                self.game["display"].blit(star, (600, 440))
+            elif self.health > 50:
+                self.stars = 2
+                self.game["display"].blit(star, (600, 440))
+            else:
+                self.stars = 1
+            
+            self.game["display"].blit(star, (500, 455))
 
     
     def is_path(self, start, new_tower):

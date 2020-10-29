@@ -25,6 +25,8 @@ class GridTile:
 
         self.level = 1
 
+        self.upgrade_cost = 50
+
         self.font = pygame.font.Font("./assets/font.ttf", 16)
 
 

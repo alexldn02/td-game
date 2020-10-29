@@ -5,9 +5,6 @@ class Button:
     def __init__(self, game, type):
         self.game = game
 
-        self.time_left_font = pygame.font.Font("./assets/font.ttf", 24)
-        self.enemy_count_font = pygame.font.Font("./assets/font.ttf", 24)
-
         self.set_type(type)
 
         size = (self.bounds[0][1] - self.bounds[0][0], self.bounds[1][1] - self.bounds[1][0])
@@ -15,10 +12,6 @@ class Button:
         self.hover_rect = pygame.Surface(size)
         self.hover_rect.set_alpha(32)
         self.hover_rect.fill((255,255,255))
-
-        self.selected_rect = pygame.Surface(size)
-        self.selected_rect.set_alpha(64)
-        self.selected_rect.fill((255,255,255))
 
         self.disabled_rect = pygame.Surface(size)
         self.disabled_rect.set_alpha(64)
@@ -40,6 +33,14 @@ class Button:
         elif self.type == "play":
             self.bounds = [[130, 490], [720, 830]]
             self.sprite = pygame.image.load("./assets/playbtn.png")
+        
+        elif self.type == "return":
+            self.bounds = [[450, 630], [585, 645]]
+            self.sprite = pygame.image.load("./assets/returnbtn.png")
+
+        elif self.type == "retry":
+            self.bounds = [[650, 830], [585, 645]]
+            self.sprite = pygame.image.load("./assets/retrybtn.png")
 
 
     def within_bounds(self, mouse_pos):
@@ -54,14 +55,10 @@ class Button:
         #Blits sprite
         self.game["display"].blit(self.sprite, (self.bounds[0][0], self.bounds[1][0]))
 
-        #Blits selected transparent rectangle if selected
-        if selected == self.type:
-            self.game["display"].blit(self.selected_rect, (self.bounds[0][0], self.bounds[1][0]))
-
-        #Or disabled transparent rectangle if button is disabled
-        elif self.type == "deletetower" and (selected == None or type(selected) == str) or self.type == "wavesend":
+        #And disabled transparent rectangle if button is disabled
+        if self.type == "deletetower" and (selected == None or type(selected) == str):
             self.game["display"].blit(self.disabled_rect, (self.bounds[0][0], self.bounds[1][0]))
             
-        #Or hovered transparent rectangle if hovered over and not selected or disabled
+        #Or hovered transparent rectangle if hovered over and not disabled
         elif self.within_bounds(mouse_pos):
             self.game["display"].blit(self.hover_rect, (self.bounds[0][0], self.bounds[1][0]))

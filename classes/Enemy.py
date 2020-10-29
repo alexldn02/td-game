@@ -28,7 +28,7 @@ class Enemy:
         if self.type == "light":
             self.sprite = pygame.image.load('./assets/enemylight.png')
             self.middle = (5, 8)
-            self.speed = 0.5
+            self.speed = 0.55
             self.max_health = 20
             self.damage = 5
             self.reward = 10
@@ -60,22 +60,27 @@ class Enemy:
 
 
     def move(self, grid):
+        #This method is called every time the enemy needs to move along one tile in the grid
 
         self.moved = False
 
-        #The enemy finds the next tile it is to move to according to shortest path algorithm        
+        #The enemy finds the next tile it is to move to according to shortest path algorithm       
         self.dest_tile = self.find_path(grid, self.current_tile)[1]
 
         #A random point within the destination tile is chosen for the enemy to move to
         self.dest_pos = (self.dest_tile[0]*50 + random.randint(5, 45) + 435, self.dest_tile[1]*50 + random.randint(5, 45) + 115)
 
+        #Pythagoras used to calculate the distance between the two points of movement
         self.move_distance = ((self.dest_pos[0] - self.current_pos[0])**2 + (self.dest_pos[1] - self.current_pos[1])**2)**0.5
 
+        #move_vector represents the distance in the x and y direction the enemy will move in one frame
         self.move_vector = [self.speed * ((self.dest_pos[0] - self.current_pos[0]) / self.move_distance), self.speed * ((self.dest_pos[1] - self.current_pos[1]) / self.move_distance)]
 
+        #math.atan2 used to find the angle between the two points of movement
         radians = math.atan2(self.dest_pos[1] - self.current_pos[1], self.dest_pos[0] - self.current_pos[0])
         self.move_angle = 360 - math.degrees(radians)
         
+        #Enemy sprite is rotated so it points in the direction of movement
         self.sprite_rot = pygame.transform.rotate(self.sprite, self.move_angle)
 
 

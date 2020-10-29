@@ -21,7 +21,7 @@ class Tower(GridTile):
             self.sprite_agro = pygame.image.load("./assets/towersplashagro.png")
             self.range = 100
             self.damage = 2
-            self.fire_rate = 1
+            self.fire_rate = 1.5
 
         elif self.type == "sniper":
             self.sprite = pygame.image.load("./assets/towersniper.png")
@@ -42,6 +42,8 @@ class Tower(GridTile):
     def level_up(self):
 
         self.level += 1
+
+        self.upgrade_cost += 10
 
         self.range = self.range * 1.1
 
@@ -79,6 +81,7 @@ class Tower(GridTile):
 
     def splash_attack(self, enemies):
         self.attack_wait_time += 1
+
         if self.attack_wait_time >= math.floor(60 * self.fire_rate):
             for enemy in enemies:
                 enemy[0].health -= self.damage
@@ -225,11 +228,12 @@ class Tower(GridTile):
                 pygame.draw.line(self.game["display"], (255,255,255), middle_pos, tuple(self.target.current_pos))
             elif self.type == "flame":
                 pygame.draw.line(self.game["display"], (255,100,0), middle_pos, tuple(self.target.current_pos), 3)
+
         elif self.type == "splash":
             max_radius = math.floor(self.range)
 
             #Radius of circle is determined by the wait time between attacks so it gets bigger and then starts small again next attack
-            radius = math.floor(max_radius * math.sin(self.attack_wait_time/60 * 0.5*math.pi))
+            radius = math.floor(max_radius * math.sin(self.attack_wait_time/90 * 0.5*math.pi))
 
             #Margins refer to the distance between the middle of the tower and the edges of the grid
             x_margins = (middle_pos[0] - 435, 1235 - middle_pos[0])
@@ -266,7 +270,7 @@ class Tower(GridTile):
             surface.set_colorkey((0,0,0))
 
             #Alpha value decreases with time from the beginning of the attack to have a fade-out effect
-            surface.set_alpha(192 - 192 * math.sin(self.attack_wait_time/60 * 0.5*math.pi))
+            surface.set_alpha(192 - 192 * math.sin(self.attack_wait_time/90 * 0.5*math.pi))
 
             #White circle is drawn onto the Surface
             pygame.draw.circle(surface, (255,255,255), (max_radius - x_cutoff_left, max_radius - y_cutoff_top), radius)
