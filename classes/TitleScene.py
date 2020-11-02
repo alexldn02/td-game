@@ -41,4 +41,4 @@ class TitleScene(Scene):
 
     def do_updates(self):
 
-        self.play_button.update(self.mouse_pos, None)
+        self.play_button.update(self.mouse_pos)

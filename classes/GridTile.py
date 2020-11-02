@@ -13,22 +13,6 @@ class GridTile:
         self.hover_square.set_alpha(32)
         self.hover_square.fill((255,255,255))
 
-        self.selected_square = pygame.Surface((50, 50))
-        self.selected_square.set_alpha(64)
-        self.selected_square.fill((255,255,255))
-
-        self.attack_wait_time = 0
-        self.firing = False
-
-        self.agro = False
-        self.target = None
-
-        self.level = 1
-
-        self.upgrade_cost = 50
-
-        self.font = pygame.font.Font("./assets/font.ttf", 16)
-
 
     def set_type(self, type):
         self.type = type

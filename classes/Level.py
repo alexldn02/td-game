@@ -270,7 +270,7 @@ class Level(Scene):
             self.game["display"].blit(money_text, (64, 67))
             
             #Back button is updated
-            self.back_btn.update(self.mouse_pos, self.selected)
+            self.back_btn.update(self.mouse_pos)
 
             #Tower create buttons are updated
             self.create_basic_btn.update(self.mouse_pos, self.selected, self.money)
@@ -380,8 +380,8 @@ class Level(Scene):
                     self.level_end_timer += 1
 
         else:
-            self.return_btn.update(self.mouse_pos, self.selected)
-            self.retry_btn.update(self.mouse_pos, self.selected)
+            self.return_btn.update(self.mouse_pos)
+            self.retry_btn.update(self.mouse_pos)
 
 
     def start_next_wave(self):
@@ -411,20 +411,25 @@ class Level(Scene):
 
     def end(self, won):
 
+        #Changing ended to True means do_events and do_updates perform loops for an ended level
         self.ended = True
 
+        #Background darkens using a transparent black rectangle drawn over the scene
         dark_bg = pygame.Surface((1280, 960))
         dark_bg.set_alpha(128)
         dark_bg.fill((0,0,0))
         self.game["display"].blit(dark_bg, (0, 0))
 
+        #If this form of level end is specified as a win
         if won:
             sprite = pygame.image.load("./assets/levelcomplete.png")
+        #Or a loss
         else:
             sprite = pygame.image.load("./assets/levelfailed.png")
         
         self.game["display"].blit(sprite, (220, 240))
 
+        #Buttons to return to the level select scene or to replay the level
         self.return_btn = Button(self.game, "return")
         self.retry_btn = Button(self.game, "retry")
 

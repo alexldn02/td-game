@@ -31,7 +31,7 @@ class Button:
             self.sprite = pygame.image.load("./assets/deletetowerbtn.png")
 
         elif self.type == "play":
-            self.bounds = [[130, 490], [720, 830]]
+            self.bounds = [[130, 370], [720, 830]]
             self.sprite = pygame.image.load("./assets/playbtn.png")
         
         elif self.type == "return":
@@ -51,7 +51,7 @@ class Button:
             return False
 
 
-    def update(self, mouse_pos, selected):
+    def update(self, mouse_pos, selected = None):
         #Blits sprite
         self.game["display"].blit(self.sprite, (self.bounds[0][0], self.bounds[1][0]))
 
