@@ -21,18 +21,35 @@ class LevelSelectScene(Scene):
 
     def start(self):
 
+        save_file = open("./save.data", "r")
+        
+        save_data = save_file.readlines()
+
+        #First line of save file represents the level the player is up to
+        current_level = int(save_data[0])
+
         self.back_btn = Button(self.game, "back")
 
         self.play_level_btns = []
+        level_no = 0
+        for row in range(0, 4):
+            for column in range(0, 5):
+                level_no += 1
 
-        for i in range (0, 5):
-            self.play_level_btns.append(PlayLevelButton(self.game, (180 + 195*i, 90), i+1, True, 0))
-        for i in range (0, 5):
-            self.play_level_btns.append(PlayLevelButton(self.game, (960 -  195*i, 310), i+6, False, 0))
-        for i in range (0, 5):
-            self.play_level_btns.append(PlayLevelButton(self.game, (180 + 195*i, 530), i+11, False, 0))
-        for i in range (0, 5):
-            self.play_level_btns.append(PlayLevelButton(self.game, (960 -  195*i, 750), i+16, False, 0))
+                if row % 2 == 0:
+                    x = 180 + 195*column
+                else:
+                    x = 960 -  195*column
+                
+                y = 90 + 220*row
+
+                #Level is unlocked if level player is up to is greater or equal to this level
+                unlocked = current_level >= level_no
+
+                #Each line of save file after the first represents the number of stars the player has completed that level with
+                stars = int(save_data[level_no])
+
+                self.play_level_btns.append(PlayLevelButton(self.game, (x, y), level_no, unlocked, stars))
 
         self.mouse_pos = pygame.mouse.get_pos()
 

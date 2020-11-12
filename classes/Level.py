@@ -19,6 +19,8 @@ class Level(Scene):
 
         self.level_data = level_data
 
+        self.level_no = self.level_data["levelno"]
+
         #Loading up assets needed in scene
         self.bg = pygame.image.load("./assets/levelbg.png")
 
@@ -437,16 +439,28 @@ class Level(Scene):
             star = pygame.image.load("./assets/star.png")
 
             if self.health == 100:
-                self.stars = 3
+                stars = 3
                 self.game["display"].blit(star, (700, 455))
                 self.game["display"].blit(star, (600, 440))
             elif self.health > 50:
-                self.stars = 2
+                stars = 2
                 self.game["display"].blit(star, (600, 440))
             else:
-                self.stars = 1
-            
+                stars = 1
             self.game["display"].blit(star, (500, 455))
+
+            save_file = open("./save.data", "r")
+            save_data = save_file.readlines()
+
+            if int(save_data[0]) == self.level_no:
+                save_data[0] = str(int(save_data[0]) + 1) + "\n"
+
+            if stars > int(save_data[self.level_no]):
+                save_data[self.level_no] = str(stars) + "\n"
+
+            save_file = open("./save.data", "w")
+            save_file.writelines(save_data)
+            
 
     
     def is_path(self, start, new_tower):
@@ -457,32 +471,28 @@ class Level(Scene):
         grid = self.grid
         new_tower = tuple(new_tower)
 
-        #The algorithm uses a queue data type to build the path
+        #Queue to store adjacent tiles that are yet to be visited
         queue = collections.deque([[start]])
 
-        #Stores all the tiles that have been "seen" by the algorithm
-        seen = set([start])
+        #Stores all the tiles that have been visited
+        visited = set([start])
         
         while queue:
             path = queue.popleft()
             x, y = path[-1]
 
             if grid[x][y].type == "end":
-                #If no path could be made, returns false
-                if path == None:
-                    return False
                 #If a path could be made, returns True
-                else:
-                    return True
+                return True
 
             #For every tile that neighbours the current x, y
             for x2, y2 in ((x+1,y), (x-1,y), (x,y+1), (x,y-1)):
                 #Evaluates to True if tile is not a wall or tower
                 does_not_block = grid[x2][y2].type == "empty" or grid[x2][y2].type == "end" or grid[x2][y2].type == "start"
                 #If coord is within the range of the grid, is not currently taken up by wall or tower,
-                #will not be taken up by the new tower once placed, and has not been seen yet
-                if 0 <= x2 < 16 and 0 <= y2 < 16 and does_not_block and (x2, y2) != new_tower and (x2, y2) not in seen:
+                #will not be taken up by the new tower once placed, and has not been visited yet
+                if 0 <= x2 < 16 and 0 <= y2 < 16 and does_not_block and (x2, y2) != new_tower and (x2, y2) not in visited:
                     #The coord along with the current path is appended to the queue
                     queue.append(path + [(x2, y2)])
-                    #The coord is added to seen
-                    seen.add((x2, y2))
+                    #The coord is added to visited
+                    visited.add((x2, y2))

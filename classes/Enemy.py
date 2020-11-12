@@ -89,7 +89,7 @@ class Enemy:
         #A breadth-first shortest path algorithm is used to calculate this
         queue = collections.deque([[start]])
         
-        seen = set([start])
+        visited = set([start])
         
         while queue:
             path = queue.popleft()
@@ -103,12 +103,12 @@ class Enemy:
                 #Evaluates to True if tile is not a wall or tower
                 does_not_block = grid[x2][y2].type == "empty" or grid[x2][y2].type == "end" or grid[x2][y2].type == "start"
                 #If coord is within the range of the grid, is not taken up by wall or tower,
-                #and has not been seen yet
-                if 0 <= x2 < 16 and 0 <= y2 < 16 and does_not_block and (x2, y2) not in seen:
+                #and has not been visited yet
+                if 0 <= x2 < 16 and 0 <= y2 < 16 and does_not_block and (x2, y2) not in visited:
                     #The coord along with the current path is appended to the queue
                     queue.append(path + [(x2, y2)])
-                    #The coord is added to seen
-                    seen.add((x2, y2))
+                    #The coord is added to visited
+                    visited.add((x2, y2))
 
 
     def update(self):

@@ -1,6 +1,7 @@
 #This array contains data about how each level is defined
 level_data = [
     {
+        "levelno": 0,
         "startmoney": 99999,
         "tiles":[
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -33,6 +34,7 @@ level_data = [
     },
 
     {
+        "levelno": 1,
         "startmoney": 180,
         "tiles":[
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -61,6 +63,7 @@ level_data = [
     },
 
     {
+        "levelno": 2,
         "startmoney": 200,
         "tiles":[
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
