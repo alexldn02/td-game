@@ -23,8 +23,12 @@ class Button:
 
         #Bounds and sprites are set depending on what type of button is instantiated
         if self.type == "back":
-            self.bounds = [[1105, 1270], [10, 60]]
+            self.bounds = [[1105, 1265], [10, 60]]
             self.sprite = pygame.image.load("./assets/backbtn.png")
+
+        elif self.type == "retry":
+            self.bounds = [[935, 1095], [10, 60]]
+            self.sprite = pygame.image.load("./assets/retrybtn.png")
 
         elif self.type == "deletetower":
             self.bounds = [[255, 345], [635, 745]]
@@ -38,9 +42,9 @@ class Button:
             self.bounds = [[450, 630], [585, 645]]
             self.sprite = pygame.image.load("./assets/returnbtn.png")
 
-        elif self.type == "retry":
+        elif self.type == "levelendretry":
             self.bounds = [[650, 830], [585, 645]]
-            self.sprite = pygame.image.load("./assets/retrybtn.png")
+            self.sprite = pygame.image.load("./assets/levelendretrybtn.png")
 
 
     def within_bounds(self, mouse_pos):

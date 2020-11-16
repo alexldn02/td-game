@@ -24,7 +24,8 @@ class Level(Scene):
         #Loading up assets needed in scene
         self.bg = pygame.image.load("./assets/levelbg.png")
 
-        self.font = pygame.font.Font("./assets/font.ttf", 24)
+        self.title_font = pygame.font.Font("./assets/font.ttf", 40)
+        self.money_font = pygame.font.Font("./assets/font.ttf", 24)
 
 
     def start(self):
@@ -71,6 +72,7 @@ class Level(Scene):
 
         #Buttons are instantiated
         self.back_btn = Button(self.game, "back")
+        self.retry_btn = Button(self.game, "retry")
 
         self.create_basic_btn = CreateTowerButton(self.game, "basic")
         self.create_splash_btn = CreateTowerButton(self.game, "splash")
@@ -104,7 +106,16 @@ class Level(Scene):
         self.ended = False
 
         #Level background image is blitted to the scene
+        #This image is not updated every frame as this would uneccessarily reduce framerate
         self.game["display"].blit(self.bg, (0, 0))
+
+        if self.level_data["levelno"] < 10:
+            string = "LEVEL 0" + str(self.level_data["levelno"])
+        else:
+            string = "LEVEL " + str(self.level_data["levelno"])
+
+        title_text = self.title_font.render(string, True, (54,67,63))
+        self.game["display"].blit(title_text, (555, 18))
 
         #Starts loop from method found in parent Scene class
         self.do_loop()
@@ -233,6 +244,10 @@ class Level(Scene):
                 elif self.back_btn.within_bounds(self.mouse_pos):
                     self.stopped = True
 
+                elif self.retry_btn.within_bounds(self.mouse_pos):
+                    self.stopped = True
+                    self.start()
+
                 else:
                     self.selected = None
 
@@ -243,7 +258,7 @@ class Level(Scene):
                 #Level while loop ends and so game returns to LevelSelectScene
                 self.stopped = True
             
-            elif self.retry_btn.within_bounds(self.mouse_pos):
+            elif self.level_end_retry_btn.within_bounds(self.mouse_pos):
                 self.stopped = True
                 self.start()
             
@@ -268,11 +283,12 @@ class Level(Scene):
 
             #Money display is updated
             pygame.draw.rect(self.game["display"], (219, 178, 111), (60, 65, 85, 25))
-            money_text = self.font.render(str(self.money), True, (0,0,0))
+            money_text = self.money_font.render(str(self.money), True, (0,0,0))
             self.game["display"].blit(money_text, (64, 67))
             
-            #Back button is updated
+            #Back / retry button is updated
             self.back_btn.update(self.mouse_pos)
+            self.retry_btn.update(self.mouse_pos)
 
             #Tower create buttons are updated
             self.create_basic_btn.update(self.mouse_pos, self.selected, self.money)
@@ -364,8 +380,8 @@ class Level(Scene):
             #Next wave automatically starts when time is up
             self.next_wave_timer += 1
 
-            if self.wave_no != len(self.waves) - 1:
-                if self.next_wave_timer == self.waves[self.wave_no + 1]["time"] * 60:
+            if self.wave_no != len(self.waves) - 1 and self.waves[self.wave_no + 1]["time"] != -1:
+                if self.next_wave_timer >= self.waves[self.wave_no + 1]["time"] * 60:
                     self.start_next_wave()
 
             #Checks if level has been won
@@ -383,7 +399,7 @@ class Level(Scene):
 
         else:
             self.return_btn.update(self.mouse_pos)
-            self.retry_btn.update(self.mouse_pos)
+            self.level_end_retry_btn.update(self.mouse_pos)
 
 
     def start_next_wave(self):
@@ -433,7 +449,7 @@ class Level(Scene):
 
         #Buttons to return to the level select scene or to replay the level
         self.return_btn = Button(self.game, "return")
-        self.retry_btn = Button(self.game, "retry")
+        self.level_end_retry_btn = Button(self.game, "levelendretry")
 
         if won:
             star = pygame.image.load("./assets/star.png")

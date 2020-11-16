@@ -48,7 +48,7 @@ class Tower(GridTile):
             self.sprite = pygame.image.load("./assets/towersniper.png")
             self.sprite_agro = pygame.image.load("./assets/towersniperagro.png")
             self.range = 200
-            self.damage = 6
+            self.damage = 8
             self.fire_rate = 1.5
 
         elif self.type == "flame":

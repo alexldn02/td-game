@@ -24,9 +24,10 @@ class Scene:
             self.do_updates()
 
             #Updates the game at 60fps
+            #If PC game is ran on cannot run at 60fps, in game "seconds" will be slower
             pygame.display.update()
             self.game["clock"].tick(60)
-            #print(self.game["clock"].get_fps())
+            print(self.game["clock"].get_fps())
 
     def do_events(self):
         return
