@@ -136,8 +136,20 @@ class Tower(GridTile):
     def flame_attack(self, enemies):
         #Nearest enemy is the first of the list where it is sorted by the distance away from tower of each enemy nearby
         self.sort(enemies)
-        #Selects only the enemy object, discarding its distance from the tower
-        nearest_enemy = enemies[0][0]
+
+        nearest_on_fire = True
+        i = 0
+        while nearest_on_fire:
+            if i < len(enemies):
+                #Selects only the enemy object, discarding its distance from the tower
+                nearest_enemy = enemies[i][0]
+                i += 1
+                
+                if not nearest_enemy.fire_damage:
+                    nearest_on_fire = False
+            else:
+                nearest_enemy = enemies[0][0]
+                nearest_on_fire = False
 
         if not self.target:
             self.target = nearest_enemy

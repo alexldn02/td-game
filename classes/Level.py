@@ -366,8 +366,8 @@ class Level(Scene):
 
                 current_wave["timer"] += 1
 
-                #Next enemies are spawned one every second (60 frames)
-                if current_wave["timer"] == 60 and current_wave["info"]["count"] > 1:
+                #Next enemies are spawned one every second (60 frames) or however many frames speficied in level_data
+                if current_wave["timer"] == current_wave["info"]["spawnrate"] and current_wave["info"]["count"] > 1:
                     self.enemies.append(Enemy(self.game, current_wave["info"]["type"], self.start_tiles[current_wave["info"]["starttile"]], self.end_tile))
                     current_wave["spawned"] += 1
 
@@ -408,6 +408,9 @@ class Level(Scene):
 
         if not "starttile" in self.waves[self.wave_no]:
             self.waves[self.wave_no]["starttile"] = 0
+
+        if not "spawnrate" in self.waves[self.wave_no]:
+                    self.waves[self.wave_no]["spawnrate"] = 60
 
         #New wave is added to currently spawning waves
         self.current_waves.append({
