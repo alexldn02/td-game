@@ -7,6 +7,7 @@ class Tower(GridTile):
 
     def __init__(self, game, type, pos):
         
+        #Calls GridTile constructor
         super().__init__(game, type, pos)
 
         self.selected_square = pygame.Surface((50, 50))
@@ -61,12 +62,13 @@ class Tower(GridTile):
 
 
     def level_up(self):
+        #Improves stats for the tower
 
         self.level += 1
 
         self.upgrade_cost += 10
 
-        self.range = self.range * 1.1
+        self.range = self.range * 1.05
 
         self.fire_rate = self.fire_rate * 0.95
         
@@ -78,7 +80,7 @@ class Tower(GridTile):
 
     def basic_attack(self, enemies):
         #Nearest enemy is the first of the list where it is sorted by the distance away from tower of each enemy nearby
-        self.sort(enemies)
+        self.sort_enemies(enemies)
         #Selects only the enemy object, discarding its distance from the tower
         nearest_enemy = enemies[0][0]
 
@@ -111,7 +113,7 @@ class Tower(GridTile):
 
     def sniper_attack(self, enemies):
         #Nearest enemy is the first of the list where it is sorted by the distance away from tower of each enemy nearby
-        self.sort(enemies)
+        self.sort_enemies(enemies)
         #Selects only the enemy object, discarding its distance from the tower
         nearest_enemy = enemies[0][0]
 
@@ -135,7 +137,7 @@ class Tower(GridTile):
 
     def flame_attack(self, enemies):
         #Nearest enemy is the first of the list where it is sorted by the distance away from tower of each enemy nearby
-        self.sort(enemies)
+        self.sort_enemies(enemies)
 
         nearest_on_fire = True
         i = 0
@@ -171,38 +173,51 @@ class Tower(GridTile):
                 self.attack_wait_time = 0
 
     
-    def sort(self, enemies):
+    def sort_enemies(self, enemies):
         #Merge sort algorithm to order enemies by distance from the tower
 
-        #List only needs to be sorted if it has more than 1 item
         if len(enemies) > 1:
-            mid = len(enemies) // 2
-            left_half = enemies[:mid]
-            right_half = enemies[mid:]
-            self.sort(left_half)
-            self.sort(right_half)
-            a = 0
-            b = 0
-            c = 0
+            #The list is split down the middle, separating both halves
+            middle = len(enemies) // 2
+            left_half = enemies[:middle]
+            right_half = enemies[middle:]
 
-            while a < len(left_half) and b < len(right_half):
-                if left_half[a][1] < right_half[b][1]:
-                    enemies[c] = left_half[a]
-                    a += 1
+            #Recursively sorts both halves by splitting them and merging them
+            self.sort_enemies(left_half)
+            self.sort_enemies(right_half)
+
+            #Index of the left half list
+            l = 0
+            #Index of the right half list
+            r = 0
+            #Index of the merged list
+            m = 0
+
+            #Loop ends after one half is fully checked
+            while l < len(left_half) and r < len(right_half):
+                #Closest of the two left and right half enemies is appended to the merged list
+                #Then moves on to the next enemy in that half to be compared to the further enemy
+                if left_half[l][1] < right_half[r][1]:
+                    enemies[m] = left_half[l]
+                    l += 1
                 else:
-                    enemies[c] = right_half[b]
-                    b += 1
-                c += 1
+                    enemies[m] = right_half[r]
+                    r += 1
+                m += 1
 
-            while a < len(left_half):
-                enemies[c] = left_half[a]
-                a += 1
-                c += 1
+            #Right half is fully checked but not left
+            while l < len(left_half):
+                #Appends all remaining enemies in left half to the merged list
+                enemies[m] = left_half[l]
+                l += 1
+                m += 1
             
-            while b < len(right_half):
-                enemies[c] = right_half[b]
-                b += 1
-                c += 1
+            #Left half is fully checked but not right
+            while r < len(right_half):
+                #Appends all remaining enemies in right half to the merged list
+                enemies[m] = right_half[r]
+                r += 1
+                m += 1
 
 
     def update(self, mouse_tile, selected, enemies):
