@@ -71,7 +71,7 @@ class LevelSelectScene(Scene):
                 else:
                     for btn in self.play_level_btns:
                         if btn.within_bounds(self.mouse_pos) and btn.unlocked:
-                            self.levels[btn.level].start()
+                            self.levels[btn.level-1].start()
                             self.start()
 
 

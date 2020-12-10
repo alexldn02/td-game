@@ -398,6 +398,7 @@ class Level(Scene):
                     self.level_end_timer += 1
 
         else:
+            #Only these two buttons are updated once the level is ended
             self.return_btn.update(self.mouse_pos)
             self.level_end_retry_btn.update(self.mouse_pos)
 
@@ -505,14 +506,18 @@ class Level(Scene):
 
             #For every tile that neighbours the current x, y
             for x2, y2 in ((x+1,y), (x-1,y), (x,y+1), (x,y-1)):
+                
                 #If tile is within the range of the grid
                 if 0 <= x2 < 16 and 0 <= y2 < 16:
                     #Evaluates to True if tile is not a wall or tower
                     does_not_block = grid[x2][y2].type == "empty" or grid[x2][y2].type == "end" or grid[x2][y2].type == "start"
+                    
                     #If not currently taken up by wall or tower,
                     #will not be taken up by the new tower once placed, and has not been visited yet
                     if does_not_block and (x2, y2) != new_tower and (x2, y2) not in visited:
+                        
                         #The coord along with the current path is appended to the queue
                         queue.append(path + [(x2, y2)])
+                        
                         #The coord is added to visited
                         visited.add((x2, y2))

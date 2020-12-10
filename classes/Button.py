@@ -35,8 +35,12 @@ class Button:
             self.sprite = pygame.image.load("./assets/deletetowerbtn.png")
 
         elif self.type == "play":
-            self.bounds = [[130, 370], [720, 830]]
+            self.bounds = [[175, 415], [665, 775]]
             self.sprite = pygame.image.load("./assets/playbtn.png")
+
+        elif self.type == "exit":
+            self.bounds = [[175, 415], [800, 910]]
+            self.sprite = pygame.image.load("./assets/exitbtn.png")
         
         elif self.type == "return":
             self.bounds = [[450, 630], [585, 645]]

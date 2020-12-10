@@ -29,7 +29,7 @@ class Enemy:
         if self.type == "light":
             self.sprite = pygame.image.load('./assets/enemylight.png')
             self.middle = (5, 8)
-            self.speed = 0.55
+            self.speed = 0.60
             self.max_health = 20
             self.damage = 5
             self.reward = 10
@@ -37,7 +37,7 @@ class Enemy:
         elif self.type == "medium":
             self.sprite = pygame.image.load('./assets/enemymedium.png')
             self.middle = (7, 9)
-            self.speed = 0.45
+            self.speed = 0.50
             self.max_health = 40
             self.damage = 10
             self.reward = 20
