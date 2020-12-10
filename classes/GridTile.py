@@ -2,8 +2,8 @@ import pygame
 
 class GridTile:
 
-    def __init__(self, game, type, pos):
-        self.game = game
+    def __init__(self, surface, type, pos):
+        self.surface = surface
 
         self.set_type(type)
 
@@ -33,8 +33,8 @@ class GridTile:
 
     def update(self, mouse_tile):
         #Blits tile sprite
-        self.game["display"].blit(self.sprite, (self.pos[0]*50 + 435, self.pos[1]*50 + 115))
+        self.surface.blit(self.sprite, (self.pos[0]*50, self.pos[1]*50))
         #Draws transparent square on top if tile is hovered over
         if tuple(mouse_tile) == self.pos:
-            self.game["display"].blit(self.hover_square, (self.pos[0]*50 + 435, self.pos[1]*50 + 115))
+            self.surface.blit(self.hover_square, (self.pos[0]*50, self.pos[1]*50))
 

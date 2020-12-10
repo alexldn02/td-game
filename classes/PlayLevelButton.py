@@ -3,9 +3,9 @@ from .Button import Button
 
 class PlayLevelButton(Button):
 
-    def __init__(self, game, pos, level, unlocked, stars):
+    def __init__(self, surface, pos, level, unlocked, stars):
         
-        self.game = game
+        self.surface = surface
 
         self.level = level
 
@@ -30,19 +30,19 @@ class PlayLevelButton(Button):
 
     def update(self, mouse_pos):
         #Blits sprite
-        self.game["display"].blit(self.sprite, (self.bounds[0][0], self.bounds[1][0]))
+        self.surface.blit(self.sprite, (self.bounds[0][0], self.bounds[1][0]))
         
         level_no = str(self.level)
         if len(level_no) == 1:
             level_no = "0" + str(self.level)
 
         text = self.font.render(level_no, True, (54,67,63))
-        self.game["display"].blit(text, (self.bounds[0][0] + 30, self.bounds[1][0] + 30))
+        self.surface.blit(text, (self.bounds[0][0] + 30, self.bounds[1][0] + 30))
         
         #And disabled transparent rectangle if button is disabled
         if not self.unlocked:
-            self.game["display"].blit(self.disabled_rect, (self.bounds[0][0], self.bounds[1][0]))
+            self.surface.blit(self.disabled_rect, (self.bounds[0][0], self.bounds[1][0]))
             
         #Or hovered transparent rectangle if hovered over and not disabled
         elif self.within_bounds(mouse_pos):
-            self.game["display"].blit(self.hover_rect, (self.bounds[0][0], self.bounds[1][0]))
+            self.surface.blit(self.hover_rect, (self.bounds[0][0], self.bounds[1][0]))

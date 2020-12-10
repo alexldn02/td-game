@@ -3,9 +3,9 @@ from .Button import Button
 
 class CreateTowerButton(Button):
 
-    def __init__(self, game, type):
+    def __init__(self, surface, type):
 
-        self.game = game
+        self.surface = surface
 
         self.set_type(type)
 
@@ -51,16 +51,16 @@ class CreateTowerButton(Button):
 
     def update(self, mouse_pos, selected, money):
         #Blits sprite
-        self.game["display"].blit(self.sprite, (self.bounds[0][0], self.bounds[1][0]))
+        self.surface.blit(self.sprite, (self.bounds[0][0], self.bounds[1][0]))
 
         #Blits selected transparent rectangle if selected
         if selected == "create" + self.type:
-            self.game["display"].blit(self.selected_rect, (self.bounds[0][0], self.bounds[1][0]))
+            self.surface.blit(self.selected_rect, (self.bounds[0][0], self.bounds[1][0]))
 
         #Or disabled transparent rectangle if button is disabled
         elif money < self.cost:
-            self.game["display"].blit(self.disabled_rect, (self.bounds[0][0], self.bounds[1][0]))
+            self.surface.blit(self.disabled_rect, (self.bounds[0][0], self.bounds[1][0]))
 
         #Or hovered transparent rectangle if hovered over and not selected
         elif self.within_bounds(mouse_pos):
-            self.game["display"].blit(self.hover_rect, (self.bounds[0][0], self.bounds[1][0]))
+            self.surface.blit(self.hover_rect, (self.bounds[0][0], self.bounds[1][0]))

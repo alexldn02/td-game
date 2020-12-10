@@ -5,10 +5,10 @@ from .GridTile import GridTile
 
 class Tower(GridTile):
 
-    def __init__(self, game, type, pos):
+    def __init__(self, surface, type, pos):
         
         #Calls GridTile constructor
-        super().__init__(game, type, pos)
+        super().__init__(surface, type, pos)
 
         self.selected_square = pygame.Surface((50, 50))
         self.selected_square.set_alpha(64)
@@ -223,24 +223,24 @@ class Tower(GridTile):
     def update(self, mouse_tile, selected, enemies):
         #Blits appropriate tower sprite
         if self.agro:
-            self.game["display"].blit(self.sprite_agro, (self.pos[0]*50 + 435, self.pos[1]*50 + 115))
+            self.surface.blit(self.sprite_agro, (self.pos[0]*50, self.pos[1]*50))
         else:
-            self.game["display"].blit(self.sprite, (self.pos[0]*50 + 435, self.pos[1]*50 + 115))
+            self.surface.blit(self.sprite, (self.pos[0]*50, self.pos[1]*50))
 
         level_text = self.font.render(str(self.level), True, (255,255,255))
-        self.game["display"].blit(level_text, (self.pos[0]*50 + 435, self.pos[1]*50 + 115))
+        self.surface.blit(level_text, (self.pos[0]*50, self.pos[1]*50))
 
         if selected == self.pos:
-            self.game["display"].blit(self.selected_square, (self.pos[0]*50 + 435, self.pos[1]*50 + 115))
+            self.surface.blit(self.selected_square, (self.pos[0]*50, self.pos[1]*50))
         #Draws transparent square on top if tile is hovered over
         elif tuple(mouse_tile) == self.pos:
-            self.game["display"].blit(self.hover_square, (self.pos[0]*50 + 435, self.pos[1]*50 + 115))
+            self.surface.blit(self.hover_square, (self.pos[0]*50 + 435, self.pos[1]*50 + 115))
 
         nearby_enemies = []
         for enemy in enemies:
             if enemy.alive:
                 #Calculates the distance of each live enemy from the tower using pythagoras
-                distance_away = (((self.pos[0]*50 + 460) - enemy.current_pos[0])**2 + ((self.pos[1]*50 + 140) - enemy.current_pos[1])**2)**0.5
+                distance_away = (((self.pos[0]*50 + 25) - enemy.current_pos[0])**2 + ((self.pos[1]*50 + 25) - enemy.current_pos[1])**2)**0.5
                 #If the enemy is within the tower's range
                 if distance_away < self.range:
                     #The enemy is added to the nearby enemies array
@@ -268,15 +268,16 @@ class Tower(GridTile):
 
 
     def update_attack_anim(self):
-        middle_pos = (self.pos[0]*50 + 460, self.pos[1]*50 + 140)
+        middle_pos = (self.pos[0]*50 + 25, self.pos[1]*50 + 25)
         if self.firing and self.target:
             if self.type == "basic":
-                pygame.draw.line(self.game["display"], (255,255,255), middle_pos, tuple(self.target.current_pos), 2)
+                pygame.draw.line(self.surface, (255,255,255), middle_pos, tuple(self.target.current_pos), 2)
             elif self.type == "sniper":
-                pygame.draw.line(self.game["display"], (255,255,255), middle_pos, tuple(self.target.current_pos))
+                pygame.draw.line(self.surface, (255,255,255), middle_pos, tuple(self.target.current_pos))
             elif self.type == "flame":
-                pygame.draw.line(self.game["display"], (255,100,0), middle_pos, tuple(self.target.current_pos), 3)
+                pygame.draw.line(self.surface, (255,100,0), middle_pos, tuple(self.target.current_pos), 3)
 
+        #The splash attack animation is much more complicated than the others
         elif self.type == "splash":
             max_radius = math.floor(self.range)
 
@@ -284,8 +285,8 @@ class Tower(GridTile):
             radius = math.floor(max_radius * math.sin(self.attack_wait_time/90 * 0.5*math.pi))
 
             #Margins refer to the distance between the middle of the tower and the edges of the grid
-            x_margins = (middle_pos[0] - 435, 1235 - middle_pos[0])
-            y_margins = (middle_pos[1] - 115, 915 - middle_pos[1])
+            x_margins = (middle_pos[0], 800 - middle_pos[0])
+            y_margins = (middle_pos[1], 800 - middle_pos[1])
 
             #Margins are used to calculate how much of the Surface rect needs to be cut off to stop the attack animation from going out of the grid
             #Range is used so that the Surface rect is as small as possible to keep the fps up
@@ -310,7 +311,7 @@ class Tower(GridTile):
             #Width and height of the invisible Surface rectangle
             surface_dimensions = (max_radius*2 - x_cutoff_left - x_cutoff_right, max_radius*2 - y_cutoff_top - y_cutoff_bottom)
 
-            surface_pos = (self.pos[0]*50 + 460 - max_radius + x_cutoff_left, self.pos[1]*50 + 140 - max_radius + y_cutoff_top)
+            surface_pos = (self.pos[0]*50 + 25 - max_radius + x_cutoff_left, self.pos[1]*50 + 25 - max_radius + y_cutoff_top)
 
             #The Surface object has to be used because pygame cannot draw transparent circles unless they are blitted as part of a transparent Surface
             #pygame.draw.circle() cannot have an alpha value
@@ -323,5 +324,5 @@ class Tower(GridTile):
             #White circle is drawn onto the Surface
             pygame.draw.circle(surface, (255,255,255), (max_radius - x_cutoff_left, max_radius - y_cutoff_top), radius)
 
-            #Surface object is blitted to the scene
-            self.game["display"].blit(surface, surface_pos)
+            #Surface object is blitted to the grid surface
+            self.surface.blit(surface, surface_pos)

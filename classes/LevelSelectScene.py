@@ -28,7 +28,7 @@ class LevelSelectScene(Scene):
         #First line of save file represents the level the player is up to
         current_level = int(save_data[0])
 
-        self.back_btn = Button(self.game, "back")
+        self.back_btn = Button(self.game["display"], "back")
 
         self.play_level_btns = []
         level_no = 0
@@ -49,7 +49,7 @@ class LevelSelectScene(Scene):
                 #Each line of save file after the first represents the number of stars the player has completed that level with
                 stars = int(save_data[level_no])
 
-                self.play_level_btns.append(PlayLevelButton(self.game, (x, y), level_no, unlocked, stars))
+                self.play_level_btns.append(PlayLevelButton(self.game["display"], (x, y), level_no, unlocked, stars))
 
         self.mouse_pos = pygame.mouse.get_pos()
 

@@ -2,8 +2,8 @@ import pygame
 
 class Button:
 
-    def __init__(self, game, type):
-        self.game = game
+    def __init__(self, surface, type):
+        self.surface = surface
 
         self.set_type(type)
 
@@ -61,12 +61,12 @@ class Button:
 
     def update(self, mouse_pos, selected = None):
         #Blits sprite
-        self.game["display"].blit(self.sprite, (self.bounds[0][0], self.bounds[1][0]))
+        self.surface.blit(self.sprite, (self.bounds[0][0], self.bounds[1][0]))
 
         #And disabled transparent rectangle if button is disabled
         if self.type == "deletetower" and (selected == None or type(selected) == str):
-            self.game["display"].blit(self.disabled_rect, (self.bounds[0][0], self.bounds[1][0]))
+            self.surface.blit(self.disabled_rect, (self.bounds[0][0], self.bounds[1][0]))
             
         #Or hovered transparent rectangle if hovered over and not disabled
         elif self.within_bounds(mouse_pos):
-            self.game["display"].blit(self.hover_rect, (self.bounds[0][0], self.bounds[1][0]))
+            self.surface.blit(self.hover_rect, (self.bounds[0][0], self.bounds[1][0]))

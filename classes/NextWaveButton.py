@@ -3,8 +3,8 @@ from .Button import Button
 
 class NextWaveButton(Button):
 
-    def __init__(self, game, type):
-        self.game = game
+    def __init__(self, surface, type):
+        self.surface = surface
 
         self.time_left_font = pygame.font.Font("./assets/font.ttf", 24)
         self.enemy_count_font = pygame.font.Font("./assets/font.ttf", 24)
@@ -42,7 +42,7 @@ class NextWaveButton(Button):
 
     def update(self, mouse_pos, count = -1, time_left = -1):
         #Blits sprite
-        self.game["display"].blit(self.sprite, (self.bounds[0][0], self.bounds[1][0]))
+        self.surface.blit(self.sprite, (self.bounds[0][0], self.bounds[1][0]))
 
         #Blits text if next wave
         if self.type != "none":
@@ -50,19 +50,19 @@ class NextWaveButton(Button):
             if not time_left == -1:
                 time_left_text = self.time_left_font.render(str(time_left), True, (115,113,102))
 
-                self.game["display"].blit(time_left_text, (94, 840))
+                self.surface.blit(time_left_text, (94, 840))
 
             enemy_count_text = self.enemy_count_font.render(str(count), True, (0,0,0))
 
             if len(str(count)) == 1:
-                self.game["display"].blit(enemy_count_text, (265, 875))
+                self.surface.blit(enemy_count_text, (265, 875))
             else:
-                self.game["display"].blit(enemy_count_text, (260, 875))      
+                self.surface.blit(enemy_count_text, (260, 875))      
 
         #Disabled transparent rectangle if button is disabled
         if self.type == "none":
-            self.game["display"].blit(self.disabled_rect, (self.bounds[0][0], self.bounds[1][0]))
+            self.surface.blit(self.disabled_rect, (self.bounds[0][0], self.bounds[1][0]))
 
         #Or hovered transparent rectangle if hovered over and not selected or disabled
         elif self.within_bounds(mouse_pos):
-            self.game["display"].blit(self.hover_rect, (self.bounds[0][0], self.bounds[1][0]))
+            self.surface.blit(self.hover_rect, (self.bounds[0][0], self.bounds[1][0]))

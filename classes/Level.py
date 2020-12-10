@@ -21,6 +21,10 @@ class Level(Scene):
 
         self.level_no = self.level_data["levelno"]
 
+        #This pygame Surface object allows everything in the game grid to be blitted to the display as one object
+        #Individual tiles, enemies, towers are blitted onto this surface and then this surface is blitted to the display
+        self.grid_surface = pygame.Surface((800, 800))
+
         #Loading up assets needed in scene
         self.bg = pygame.image.load("./assets/levelbg.png")
 
@@ -52,7 +56,7 @@ class Level(Scene):
                 else:
                     tile_type = "empty"
 
-                tile = GridTile(self.game, tile_type, (a, b))
+                tile = GridTile(self.grid_surface, tile_type, (a, b))
 
                 self.grid[a].append(tile)
 
@@ -71,19 +75,19 @@ class Level(Scene):
         self.health = 100
 
         #Buttons are instantiated
-        self.back_btn = Button(self.game, "back")
-        self.retry_btn = Button(self.game, "retry")
+        self.back_btn = Button(self.game["display"], "back")
+        self.retry_btn = Button(self.game["display"], "retry")
 
-        self.create_basic_btn = CreateTowerButton(self.game, "basic")
-        self.create_splash_btn = CreateTowerButton(self.game, "splash")
-        self.create_sniper_btn = CreateTowerButton(self.game, "sniper")
-        self.create_flame_btn = CreateTowerButton(self.game, "flame")
+        self.create_basic_btn = CreateTowerButton(self.game["display"], "basic")
+        self.create_splash_btn = CreateTowerButton(self.game["display"], "splash")
+        self.create_sniper_btn = CreateTowerButton(self.game["display"], "sniper")
+        self.create_flame_btn = CreateTowerButton(self.game["display"], "flame")
 
-        self.upgrade_tower_btn = UpgradeButton(self.game)
+        self.upgrade_tower_btn = UpgradeButton(self.game["display"])
 
-        self.delete_tower_btn = Button(self.game, "deletetower")
+        self.delete_tower_btn = Button(self.game["display"], "deletetower")
 
-        self.next_wave_btn = NextWaveButton(self.game, self.waves[0]["type"])
+        self.next_wave_btn = NextWaveButton(self.game["display"], self.waves[0]["type"])
 
         #Stores what is currently selected by the player
         #Either holds a string representing a button, a tuple representing a tile in the grid, or None
@@ -163,22 +167,22 @@ class Level(Scene):
                     if path and not enemy_here:
                         #Depending on which button is selected, specified tower is created
                         if self.selected == "createbasic":
-                            self.grid[x][y] = Tower(self.game, "basic", (x, y))
+                            self.grid[x][y] = Tower(self.grid_surface, "basic", (x, y))
                             self.selected = None
                             self.money -= 100
 
                         elif self.selected == "createsplash":
-                            self.grid[x][y] = Tower(self.game, "splash", (x, y))
+                            self.grid[x][y] = Tower(self.grid_surface, "splash", (x, y))
                             self.selected = None
                             self.money -= 120
 
                         elif self.selected == "createsniper":
-                            self.grid[x][y] = Tower(self.game, "sniper", (x, y))
+                            self.grid[x][y] = Tower(self.grid_surface, "sniper", (x, y))
                             self.selected = None
                             self.money -= 140
 
                         elif self.selected == "createflame":
-                            self.grid[x][y] = Tower(self.game, "flame", (x, y))
+                            self.grid[x][y] = Tower(self.grid_surface, "flame", (x, y))
                             self.selected = None
                             self.money -= 160
 
@@ -234,7 +238,7 @@ class Level(Scene):
 
 
                 elif self.delete_tower_btn.within_bounds(self.mouse_pos) and type(self.selected) == tuple:
-                    self.grid[self.selected[0]][self.selected[1]] = GridTile(self.game, "empty", self.selected)
+                    self.grid[self.selected[0]][self.selected[1]] = GridTile(self.grid_surface, "empty", self.selected)
                     self.selected = None
 
                 #If player clicks "next wave" and there are waves remaining
@@ -357,18 +361,21 @@ class Level(Scene):
                 if enemy.alive:
                     enemy.update_health_bar()
 
+            #Game grid is updated every frame
+            self.game["display"].blit(self.grid_surface, (435, 115))
+
             #For every wave that is currently spawning
             for current_wave in self.current_waves:
                 #First enemy is spawned immediately
                 if current_wave["spawned"] == 0:
-                    self.enemies.append(Enemy(self.game, current_wave["info"]["type"], self.start_tiles[current_wave["info"]["starttile"]], self.end_tile))
+                    self.enemies.append(Enemy(self.grid_surface, current_wave["info"]["type"], self.start_tiles[current_wave["info"]["starttile"]], self.end_tile))
                     current_wave["spawned"] += 1
 
                 current_wave["timer"] += 1
 
                 #Next enemies are spawned one every second (60 frames) or however many frames speficied in level_data
                 if current_wave["timer"] == current_wave["info"]["spawnrate"] and current_wave["info"]["count"] > 1:
-                    self.enemies.append(Enemy(self.game, current_wave["info"]["type"], self.start_tiles[current_wave["info"]["starttile"]], self.end_tile))
+                    self.enemies.append(Enemy(self.grid_surface, current_wave["info"]["type"], self.start_tiles[current_wave["info"]["starttile"]], self.end_tile))
                     current_wave["spawned"] += 1
 
                     if current_wave["spawned"] == current_wave["info"]["count"]:
@@ -452,8 +459,8 @@ class Level(Scene):
         self.game["display"].blit(sprite, (220, 240))
 
         #Buttons to return to the level select scene or to replay the level
-        self.return_btn = Button(self.game, "return")
-        self.level_end_retry_btn = Button(self.game, "levelendretry")
+        self.return_btn = Button(self.game["display"], "return")
+        self.level_end_retry_btn = Button(self.game["display"], "levelendretry")
 
         if won:
             star = pygame.image.load("./assets/star.png")

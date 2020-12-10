@@ -5,8 +5,8 @@ import collections
 
 class Enemy:
 
-    def __init__(self, game, type, start_tile, end_tile):
-        self.game = game
+    def __init__(self, surface, type, start_tile, end_tile):
+        self.surface = surface
 
         self.alive = True
 
@@ -55,7 +55,7 @@ class Enemy:
 
         self.to_reward = False
 
-        self.current_pos = [self.current_tile[0]*50 + random.randint(0, 50) + 435, self.current_tile[1]*50 + random.randint(0, 50) + 115]
+        self.current_pos = [self.current_tile[0]*50 + random.randint(0, 50), self.current_tile[1]*50 + random.randint(0, 50)]
         self.dest_pos = ()
 
         self.sprite_rot = pygame.transform.rotate(self.sprite, 0)
@@ -70,7 +70,7 @@ class Enemy:
         self.dest_tile = self.find_path(grid, self.current_tile)[1]
 
         #A random point within the destination tile is chosen for the enemy to move to
-        self.dest_pos = (self.dest_tile[0]*50 + random.randint(5, 45) + 435, self.dest_tile[1]*50 + random.randint(5, 45) + 115)
+        self.dest_pos = (self.dest_tile[0]*50 + random.randint(5, 45), self.dest_tile[1]*50 + random.randint(5, 45))
 
         #Pythagoras' theroem used to calculate the distance between the two points of movement
         self.move_distance = ((self.dest_pos[0] - self.current_pos[0])**2 + (self.dest_pos[1] - self.current_pos[1])**2)**0.5
@@ -157,9 +157,9 @@ class Enemy:
             self.to_reward = True
             self.alive = False
         
-        #Enemy sprite is blitted onto the scene
+        #Enemy sprite is blitted onto the grid surface
         blit_pos = (self.current_pos[0] - self.middle[0], self.current_pos[1] - self.middle[1])
-        self.game["display"].blit(self.sprite_rot, blit_pos)
+        self.surface.blit(self.sprite_rot, blit_pos)
 
 
     def update_health_bar(self):
@@ -168,9 +168,9 @@ class Enemy:
         #The green rectangle's width is calculated based on the enemy's remaining HP
         green_rect = (self.current_pos[0] - 7.5, self.current_pos[1] - 15, 15 * (self.health / self.max_health), 2)
 
-        pygame.draw.rect(self.game["display"], (197, 9, 9), red_rect)
+        pygame.draw.rect(self.surface, (197, 9, 9), red_rect)
         #If the enemy is on fire, green rectangle has its colour changed to orange
         if self.fire_damage:
-            pygame.draw.rect(self.game["display"], (255, 100, 0), green_rect)
+            pygame.draw.rect(self.surface, (255, 100, 0), green_rect)
         else:
-            pygame.draw.rect(self.game["display"], (9, 197, 9), green_rect)
+            pygame.draw.rect(self.surface, (9, 197, 9), green_rect)

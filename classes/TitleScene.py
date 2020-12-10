@@ -16,9 +16,9 @@ class TitleScene(Scene):
 
     def start(self):
 
-        self.play_button = Button(self.game, "play")
+        self.play_button = Button(self.game["display"], "play")
 
-        self.exit_button = Button(self.game, "exit")
+        self.exit_button = Button(self.game["display"], "exit")
 
         self.mouse_pos = pygame.mouse.get_pos()
 
