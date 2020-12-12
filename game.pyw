@@ -8,12 +8,8 @@ pygame.init()
 #This means it can easily be passed on as a parameter for game objects
 game = {}
 
-#Width and height of game window
-GAME_WIDTH = 1280
-GAME_HEIGHT = 960
-
 #Using pygame to set width, height and caption for game window
-game["display"] = pygame.display.set_mode((GAME_WIDTH, GAME_HEIGHT))
+game["display"] = pygame.display.set_mode((1280, 960))
 pygame.display.set_caption("Confrontation")
 
 #Setting up an in game clock

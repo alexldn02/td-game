@@ -27,9 +27,13 @@ class Level(Scene):
 
         #Loading up assets needed in scene
         self.bg = pygame.image.load("./assets/levelbg.png")
+        self.level_paused = pygame.image.load("./assets/levelpaused.png")
+        self.level_complete = pygame.image.load("./assets/levelcomplete.png")
+        self.level_failed = pygame.image.load("./assets/levelfailed.png")
 
         self.title_font = pygame.font.Font("./assets/font.ttf", 40)
         self.money_font = pygame.font.Font("./assets/font.ttf", 24)
+        self.fps_font = pygame.font.Font("./assets/font.ttf", 24)
 
 
     def start(self):
@@ -109,6 +113,8 @@ class Level(Scene):
         #Changes to True when player wins or loses the level
         self.ended = False
 
+        self.paused = False
+
         #Level background image is blitted to the scene
         #This image is not updated every frame as this would uneccessarily reduce framerate
         self.game["display"].blit(self.bg, (0, 0))
@@ -118,8 +124,8 @@ class Level(Scene):
         else:
             string = "LEVEL " + str(self.level_data["levelno"])
 
-        title_text = self.title_font.render(string, True, (54,67,63))
-        self.game["display"].blit(title_text, (555, 18))
+        self.title_text = self.title_font.render(string, True, (54,67,63))
+        self.game["display"].blit(self.title_text, (555, 18))
 
         #Starts loop from method found in parent Scene class
         self.do_loop()
@@ -132,7 +138,7 @@ class Level(Scene):
             #Every time the mouse is moved its position is tracked
             self.mouse_pos = pygame.mouse.get_pos()
 
-            if not self.ended:
+            if not (self.ended or self.paused):
                 #If mouse coords are within grid
                 if self.mouse_pos[0] >= 435 and self.mouse_pos[0] < 1235 and self.mouse_pos[1] >= 115 and self.mouse_pos[1] < 915:
                     #Calculates which tile of the grid the mouse is hovered over
@@ -143,7 +149,7 @@ class Level(Scene):
                     #Position is stored as -1 if mouse is not over the grid
                     self.mouse_tile = [-1, -1]
  
-        if self.event.type == pygame.MOUSEBUTTONUP and not self.ended:
+        if self.event.type == pygame.MOUSEBUTTONUP and not (self.ended or self.paused):
 
             #If mouse clicks and is within grid
             if self.mouse_tile != [-1, -1]:
@@ -256,7 +262,7 @@ class Level(Scene):
                     self.selected = None
 
         #If player clicks after level is complete
-        elif self.event.type == pygame.MOUSEBUTTONUP:
+        elif self.event.type == pygame.MOUSEBUTTONUP and self.ended:
             #Clicks on return button
             if self.return_btn.within_bounds(self.mouse_pos):
                 #Level while loop ends and so game returns to LevelSelectScene
@@ -266,14 +272,31 @@ class Level(Scene):
                 self.stopped = True
                 self.start()
             
-        if self.event.type == pygame.KEYUP and not self.ended:
+        elif self.event.type == pygame.KEYUP and not self.ended:
             if self.event.key == pygame.K_ESCAPE:
                 self.selected = None
+
+            if self.event.key == pygame.K_SPACE:
+                if self.paused:
+                    self.game["display"].blit(self.bg, (0, 0))
+                    self.game["display"].blit(self.title_text, (555, 18))
+                    
+                    self.paused = False
+                else:
+                    #Background darkens using a transparent black rectangle drawn over the scene
+                    dark_bg = pygame.Surface((1280, 960))
+                    dark_bg.set_alpha(128)
+                    dark_bg.fill((0,0,0))
+
+                    self.game["display"].blit(dark_bg, (0, 0))
+                    self.game["display"].blit(self.level_paused, (220, 240))
+
+                    self.paused = True
 
 
     def do_updates(self):
         
-        if not self.ended:
+        if not (self.ended or self.paused):
             #After events are handled, all objects are updated
             #Sprites/shapes at the back of the scene have to be updated first and sprites/shapes at the front last
 
@@ -364,6 +387,13 @@ class Level(Scene):
             #Game grid is updated every frame
             self.game["display"].blit(self.grid_surface, (435, 115))
 
+            #FPS display in bottom right corner
+            pygame.draw.rect(self.game["display"], (64, 53, 41), (1245, 930, 30, 30))
+            fps_text = self.fps_font.render(str(math.ceil(self.game["clock"].get_fps())), True, (115,113,102))
+            self.game["display"].blit(fps_text, (1245, 930))
+
+            #Wave spawning mechanics
+
             #For every wave that is currently spawning
             for current_wave in self.current_waves:
                 #First enemy is spawned immediately
@@ -391,6 +421,8 @@ class Level(Scene):
                 if self.next_wave_timer >= self.waves[self.wave_no + 1]["time"] * 60:
                     self.start_next_wave()
 
+            #Level complete mechanics
+
             #Checks if level has been won
             enemies_alive = False
             for enemy in self.enemies:
@@ -404,7 +436,7 @@ class Level(Scene):
                 else:
                     self.level_end_timer += 1
 
-        else:
+        elif self.ended:
             #Only these two buttons are updated once the level is ended
             self.return_btn.update(self.mouse_pos)
             self.level_end_retry_btn.update(self.mouse_pos)
@@ -447,16 +479,15 @@ class Level(Scene):
         dark_bg = pygame.Surface((1280, 960))
         dark_bg.set_alpha(128)
         dark_bg.fill((0,0,0))
+
         self.game["display"].blit(dark_bg, (0, 0))
 
         #If this form of level end is specified as a win
         if won:
-            sprite = pygame.image.load("./assets/levelcomplete.png")
+            self.game["display"].blit(self.level_complete, (220, 240))
         #Or a loss
         else:
-            sprite = pygame.image.load("./assets/levelfailed.png")
-        
-        self.game["display"].blit(sprite, (220, 240))
+            self.game["display"].blit(self.level_failed, (220, 240))
 
         #Buttons to return to the level select scene or to replay the level
         self.return_btn = Button(self.game["display"], "return")
