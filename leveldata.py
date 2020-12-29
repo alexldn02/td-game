@@ -26,7 +26,8 @@ level_data = [
             {"type": "light", "count": 5, "time": 30},
             {"type": "light", "count": 7, "time": 30},
             {"type": "light", "count": 10, "time": 30},
-            {"type": "light", "count": 15, "time": 30}]
+            {"type": "light", "count": 15, "time": 30}
+        ]
     },
 
     {
@@ -55,11 +56,41 @@ level_data = [
             {"type": "light", "count": 8, "time": 25},
             {"type": "medium", "count": 5, "time": 25},
             {"type": "light", "count": 15, "time": 20},
-            {"type": "medium", "count": 8, "time": 30}]
+            {"type": "medium", "count": 8, "time": 30}
+        ]
     },
 
     {
         "levelno": 3,
+        "startmoney": 380,
+        "tiles": [
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            [1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            [1, 2, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            [1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            [1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            [1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1],
+            [1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1],
+            [1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
+            [1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1],
+            [1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1],
+            [1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1],
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1],
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1],
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 3, 1],
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1],
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+        ],
+        "waves": [
+            {"type": "medium", "count": 5, "time": -1},
+            {"type": "light", "count": 15, "time": 30, "spawnrate": 20},
+            {"type": "medium", "count": 10, "time": 30, "spawnrate": 30},
+            {"type": "heavy", "count": 7, "time": 40, "spawnrate": 30}
+        ]
+    },
+
+    {
+        "levelno": 4,
         "startmoney": 200,
         "tiles": [
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -82,14 +113,15 @@ level_data = [
         "waves": [
             {"type": "light", "count": 5, "time": -1},
             {"type": "light", "count": 10, "time": 30},
-            {"type": "medium", "count": 8, "time": 25},
+            {"type": "medium", "count": 5, "time": 25},
             {"type": "light", "count": 15, "time": 30},
-            {"type": "medium", "count": 12, "time": 30},
-            {"type": "heavy", "count": 8, "time": 40}]
+            {"type": "medium", "count": 10, "time": 30},
+            {"type": "heavy", "count": 8, "time": 40}
+        ]
     },
     
     {
-        "levelno": 4,
+        "levelno": 5,
         "startmoney": 280,
         "tiles": [
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -111,36 +143,12 @@ level_data = [
         ],
         "waves": [
             {"type": "light", "count": 5, "starttile": 0, "time": -1},
-            {"type": "light", "count": 10, "starttile": 1, "time": 30},
-            {"type": "medium", "count": 8, "starttile": 0, "time": 25},
+            {"type": "light", "count": 7, "starttile": 1, "time": 30},
+            {"type": "medium", "count": 5, "starttile": 0, "time": 25},
             {"type": "light", "count": 15, "starttile": 1, "time": 30},
-            {"type": "medium", "count": 12, "starttile": 0, "time": 30},
-            {"type": "heavy", "count": 8, "starttile": 1, "time": 40}]
-    },
-
-    {
-        "levelno": 5,
-        "startmoney": 280,
-        "tiles": [
-            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            [1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            [1, 2, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            [1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            [1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            [1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1],
-            [1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1],
-            [1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
-            [1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1],
-            [1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1],
-            [1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1],
-            [1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1],
-            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1],
-            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 3, 1],
-            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1],
-            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-        ],
-        "waves": [
-            {"type": "light", "count": 5, "starttile": 0, "time": -1}]
+            {"type": "medium", "count": 10, "starttile": 0, "time": 30},
+            {"type": "heavy", "count": 8, "starttile": 1, "time": 40}
+        ]
     },
 
     {
@@ -168,7 +176,8 @@ level_data = [
             {"type": "light", "count": 10, "time": -1, "spawnrate": 30},
             {"type": "light", "count": 20, "time": 30, "spawnrate": 30},
             {"type": "medium", "count": 15, "time": 30, "spawnrate": 30},
-            {"type": "light", "count": 40, "time": 30, "spawnrate": 15}]
+            {"type": "light", "count": 40, "time": 30, "spawnrate": 15}
+        ]
     },
 
     {
@@ -199,8 +208,9 @@ level_data = [
             {"type": "light", "count": 10, "starttile": 1, "time": 5},
             {"type": "medium", "count": 7, "starttile": 0, "time": 40},
             {"type": "medium", "count": 7, "starttile": 1, "time": 5},
-            {"type": "medium", "count": 10, "starttile": 0, "time": 30, "spawnrate": 0.5},
-            {"type": "medium", "count": 10, "starttile": 1, "time": 5, "spawnrate": 0.5}]
+            {"type": "medium", "count": 10, "starttile": 0, "time": 30},
+            {"type": "medium", "count": 10, "starttile": 1, "time": 5}
+        ]
     },
 
     {
@@ -228,61 +238,66 @@ level_data = [
             {"type": "light", "count": 10, "time": -1},
             {"type": "medium", "count": 10, "time": 30, "spawnrate": 120},
             {"type": "heavy", "count": 10, "time": 40, "spawnrate": 120},
-            {"type": "light", "count": 20, "time": 40, "spawnrate": 20}]
+            {"type": "light", "count": 20, "time": 40, "spawnrate": 20}
+        ]
     },
 
     {
         "levelno": 9,
-        "startmoney": 3000,
+        "startmoney": 350,
         "tiles": [
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
             [1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1],
-            [1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1],
-            [1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1],
+            [1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1],
+            [1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1],
             [1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1],
             [1, 1, 1, 0, 1, 0, 1, 3, 0, 0, 0, 1, 0, 1, 1, 1],
             [1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1],
-            [1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1],
-            [1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1],
-            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1],
+            [1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1],
+            [1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1],
+            [1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1],
             [1, 1, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1],
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
         ],
         "waves": [
-            {"type": "light", "count": 10, "starttile": 0, "time": -1},
-            {"type": "light", "count": 10, "starttile": 0, "time": -1},
-            {"type": "light", "count": 10, "starttile": 0, "time": -1}]
+            {"type": "light", "count": 30, "time": -1},
+            {"type": "light", "count": 30, "time": 30, "spawnrate": 30},
+            {"type": "light", "count": 50, "time": 30, "spawnrate": 30},
+            {"type": "heavy", "count": 20, "time": 50, "spawnrate": 30}
+        ]
     },
 
     {
         "levelno": 10,
-        "startmoney": 3000,
+        "startmoney": 300,
         "tiles": [
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            [1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1],
-            [1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1],
-            [1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1],
-            [1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1],
-            [1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1],
-            [1, 1, 1, 0, 0, 2, 1, 3, 1, 2, 0, 0, 1, 1, 1, 1],
-            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            [1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1],
+            [1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1],
+            [1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 1, 1, 1],
+            [1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 1, 1, 1],
+            [1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1],
+            [1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 1, 1, 1],
+            [1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1],
+            [1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 3, 1, 1, 1, 1],
+            [1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1],
+            [1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1],
+            [1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1],
+            [1, 1, 1, 1, 2, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1],
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
         ],
         "waves": [
-            {"type": "light", "count": 10, "starttile": 0, "time": -1},
-            {"type": "light", "count": 10, "starttile": 0, "time": -1},
-            {"type": "light", "count": 10, "starttile": 0, "time": -1}]
+            {"type": "light", "count": 10, "time": -1},
+            {"type": "medium", "count": 10, "time": 40, "spawnrate": 80},
+            {"type": "light", "count": 15, "time": 50},
+            {"type": "medium", "count": 20, "time": 20}
+        ]
     },
 
     {
@@ -309,17 +324,18 @@ level_data = [
         "waves": [
             {"type": "light", "count": 10, "starttile": 0, "time": -1},
             {"type": "light", "count": 10, "starttile": 1, "time": 10},
-            {"type": "medium", "count": 10, "starttile": 0, "time": 35},
-            {"type": "medium", "count": 10, "starttile": 1, "time": 5},
+            {"type": "medium", "count": 6, "starttile": 0, "time": 35},
+            {"type": "medium", "count": 6, "starttile": 1, "time": 5},
             {"type": "light", "count": 30, "starttile": 0, "time": 45, "spawnrate": 20},
             {"type": "light", "count": 30, "starttile": 1, "time": 5, "spawnrate": 20},
-            {"type": "heavy", "count": 5, "starttile": 0, "time": 40, "spawnrate": 150},
-            {"type": "heavy", "count": 5, "starttile": 1, "time": 5, "spawnrate": 150}]
+            {"type": "heavy", "count": 5, "starttile": 0, "time": 40, "spawnrate": 120},
+            {"type": "heavy", "count": 5, "starttile": 1, "time": 5, "spawnrate": 120}
+        ]
     },
 
     {
         "levelno": 12,
-        "startmoney": 3000,
+        "startmoney": 400,
         "tiles": [
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -339,40 +355,14 @@ level_data = [
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
         ],
         "waves": [
-            {"type": "light", "count": 10, "starttile": 0, "time": -1},
-            {"type": "light", "count": 10, "starttile": 0, "time": -1},
-            {"type": "light", "count": 10, "starttile": 0, "time": -1}]
+            {"type": "light", "count": 10, "time": -1},
+            {"type": "medium", "count": 10, "time": 30, "spawnrate": 90},
+            {"type": "heavy", "count": 10, "time": 30, "spawnrate": 120}
+        ]
     },
 
     {
         "levelno": 13,
-        "startmoney": 3000,
-        "tiles": [
-            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            [1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1],
-            [1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1],
-            [1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1],
-            [1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1],
-            [1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1],
-            [1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1],
-            [1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1],
-            [1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 3, 1, 1, 1, 1],
-            [1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            [1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            [1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            [1, 1, 1, 1, 2, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-        ],
-        "waves": [
-            {"type": "light", "count": 10, "starttile": 0, "time": -1},
-            {"type": "light", "count": 10, "starttile": 0, "time": -1},
-            {"type": "light", "count": 10, "starttile": 0, "time": -1}]
-    },
-
-    {
-        "levelno": 14,
         "startmoney": 300,
         "tiles": [
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -394,12 +384,47 @@ level_data = [
         ],
         "waves": [
             {"type": "light", "count": 30, "time": -1},
-            {"type": "heavy", "count": 10, "time": -1, "spawnrate": 180}]
+            {"type": "heavy", "count": 10, "time": -1, "spawnrate": 180}
+        ]
+    },
+
+    {
+        "levelno": 14,
+        "startmoney": 250,
+        "tiles": [
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            [1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1],
+            [1, 1, 1, 0, 2, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1],
+            [1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1],
+            [1, 1, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1],
+            [1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1],
+            [1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 3, 0, 1, 1, 1],
+            [1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1],
+            [1, 1, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1],
+            [1, 1, 1, 0, 2, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1],
+            [1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1],
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+        ],
+        "waves": [
+            {"type": "medium", "count": 3, "starttile": 1, "time": -1},
+            {"type": "light", "count": 5, "starttile": 1, "time": 30},
+            {"type": "light", "count": 3, "starttile": 0, "time": 10},
+            {"type": "medium", "count": 3, "starttile": 1, "time": 30, "spawnrate": 90},
+            {"type": "medium", "count": 2, "starttile": 0, "time": 15, "spawnrate": 90},
+            {"type": "medium", "count": 4, "starttile": 0, "time": 30, "spawnrate": 90},
+            {"type": "light", "count": 20, "starttile": 1, "time": 30, "spawnrate": 30},
+            {"type": "heavy", "count": 3, "starttile": 1, "time": 30, "spawnrate": 90},
+            {"type": "heavy", "count": 3, "starttile": 0, "time": 5, "spawnrate": 90}
+        ]
     },
 
     {
         "levelno": 15,
-        "startmoney": 3000,
+        "startmoney": 520,
         "tiles": [
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -420,13 +445,23 @@ level_data = [
         ],
         "waves": [
             {"type": "light", "count": 10, "starttile": 0, "time": -1},
-            {"type": "light", "count": 10, "starttile": 1, "time": -1},
-            {"type": "light", "count": 10, "starttile": 2, "time": -1}]
+            {"type": "light", "count": 10, "starttile": 1, "time": 10},
+            {"type": "light", "count": 10, "starttile": 2, "time": 10},
+            {"type": "medium", "count": 7, "starttile": 0, "time": 30},
+            {"type": "medium", "count": 7, "starttile": 1, "time": 10},
+            {"type": "medium", "count": 7, "starttile": 2, "time": 10},
+            {"type": "light", "count": 20, "starttile": 0, "time": 30, "spawnrate": 20},
+            {"type": "light", "count": 20, "starttile": 1, "time": 5, "spawnrate": 20},
+            {"type": "light", "count": 20, "starttile": 2, "time": 5, "spawnrate": 20},
+            {"type": "medium", "count": 12, "starttile": 0, "time": 30},
+            {"type": "medium", "count": 12, "starttile": 1, "time": 10},
+            {"type": "medium", "count": 12, "starttile": 2, "time": 10}
+        ]
     },
 
     {
         "levelno": 16,
-        "startmoney": 3000,
+        "startmoney": 430,
         "tiles": [
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -446,14 +481,15 @@ level_data = [
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
         ],
         "waves": [
-            {"type": "light", "count": 10, "starttile": 0, "time": -1},
-            {"type": "light", "count": 10, "starttile": 0, "time": -1},
-            {"type": "light", "count": 10, "starttile": 0, "time": -1}]
+            {"type": "light", "count": 25, "time": -1},
+            {"type": "heavy", "count": 10, "time": 40},
+            {"type": "medium", "count": 20, "time": 60}
+        ]
     },
 
     {
         "levelno": 17,
-        "startmoney": 3000,
+        "startmoney": 400,
         "tiles": [
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
             [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
@@ -473,14 +509,16 @@ level_data = [
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
         ],
         "waves": [
-            {"type": "light", "count": 10, "starttile": 0, "time": -1},
-            {"type": "light", "count": 10, "starttile": 0, "time": -1},
-            {"type": "light", "count": 10, "starttile": 0, "time": -1}]
+            {"type": "light", "count": 10, "time": -1},
+            {"type": "heavy", "count": 5, "time": 35, "spawnrate": 240},
+            {"type": "medium", "count": 10, "time": 60},
+            {"type": "heavy", "count": 10, "time": 60, "spawnrate": 240}
+        ]
     },
 
     {
         "levelno": 18,
-        "startmoney": 3000,
+        "startmoney": 520,
         "tiles": [
             [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -500,14 +538,22 @@ level_data = [
             [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0]
         ],
         "waves": [
-            {"type": "light", "count": 10, "starttile": 0, "time": -1},
-            {"type": "light", "count": 10, "starttile": 1, "time": -1},
-            {"type": "light", "count": 10, "starttile": 2, "time": -1}]
+            {"type": "medium", "count": 5, "starttile": 0, "time": -1},
+            {"type": "medium", "count": 10, "starttile": 0, "time": 30},
+            {"type": "light", "count": 15, "starttile": 1, "time": 30, "spawnrate": 15},
+            {"type": "light", "count": 15, "starttile": 2, "time": 5, "spawnrate": 15},
+            {"type": "heavy", "count": 8, "starttile": 0, "time": 30},
+            {"type": "medium", "count": 15, "starttile": 1, "time": 5},
+            {"type": "medium", "count": 15, "starttile": 2, "time": 5},
+            {"type": "heavy", "count": 10, "starttile": 1, "time": 30, "spawnrate": 30},
+            {"type": "heavy", "count": 10, "starttile": 0, "time": 5, "spawnrate": 30},
+            {"type": "heavy", "count": 10, "starttile": 2, "time": 5, "spawnrate": 30}
+        ]
     },
 
     {
         "levelno": 19,
-        "startmoney": 3000,
+        "startmoney": 640,
         "tiles": [
             [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
             [1, 0, 0, 0, 1, 1, 0, 0, 2, 0, 1, 1, 0, 0, 0, 1],
@@ -527,15 +573,28 @@ level_data = [
             [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1]
         ],
         "waves": [
-            {"type": "light", "count": 10, "starttile": 0, "time": -1},
-            {"type": "light", "count": 10, "starttile": 2, "time": -1},
-            {"type": "light", "count": 10, "starttile": 3, "time": -1},
-            {"type": "light", "count": 10, "starttile": 1, "time": -1}]
+            {"type": "light", "count": 7, "starttile": 0, "time": -1},
+            {"type": "light", "count": 7, "starttile": 2, "time": 10},
+            {"type": "light", "count": 7, "starttile": 3, "time": 10},
+            {"type": "light", "count": 7, "starttile": 1, "time": 10},
+            {"type": "light", "count": 15, "starttile": 0, "time": 30},
+            {"type": "light", "count": 15, "starttile": 2, "time": 5},
+            {"type": "light", "count": 15, "starttile": 3, "time": 5},
+            {"type": "light", "count": 15, "starttile": 1, "time": 5},
+            {"type": "medium", "count": 10, "starttile": 0, "time": 40},
+            {"type": "medium", "count": 10, "starttile": 2, "time": 10},
+            {"type": "medium", "count": 10, "starttile": 3, "time": 10},
+            {"type": "medium", "count": 10, "starttile": 1, "time": 10},
+            {"type": "heavy", "count": 10, "starttile": 0, "time": 40},
+            {"type": "medium", "count": 20, "starttile": 2, "time": 5, "spawnrate": 40},
+            {"type": "medium", "count": 20, "starttile": 3, "time": 5, "spawnrate": 30},
+            {"type": "light", "count": 30, "starttile": 1, "time": 5, "spawnrate": 10}
+        ]
     },
 
     {
         "levelno": 20,
-        "startmoney": 3000,
+        "startmoney": 680,
         "tiles": [
             [0, 0, 2, 0, 0, 2, 0, 0, 2, 0, 0, 2, 0, 0, 2, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -555,16 +614,36 @@ level_data = [
             [0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 3]
         ],
         "waves": [
-            {"type": "light", "count": 10, "starttile": 0, "time": -1},
-            {"type": "light", "count": 10, "starttile": 1, "time": -1},
-            {"type": "light", "count": 10, "starttile": 2, "time": -1},
-            {"type": "light", "count": 10, "starttile": 3, "time": -1},
-            {"type": "light", "count": 10, "starttile": 4, "time": -1},
-            {"type": "light", "count": 10, "starttile": 5, "time": -1},
-            {"type": "light", "count": 10, "starttile": 6, "time": -1},
-            {"type": "light", "count": 10, "starttile": 7, "time": -1},
-            {"type": "light", "count": 10, "starttile": 8, "time": -1},
-            {"type": "light", "count": 10, "starttile": 9, "time": -1},
-            {"type": "light", "count": 10, "starttile": 10, "time": -1}]
+            {"type": "light", "count": 5, "starttile": 4, "time": -1},
+            {"type": "medium", "count": 1, "starttile": 3, "time": 5},
+            {"type": "light", "count": 5, "starttile": 2, "time": 5},
+            {"type": "medium", "count": 1, "starttile": 1, "time": 5},
+            {"type": "light", "count": 5, "starttile": 0, "time": 5},
+            {"type": "medium", "count": 1, "starttile": 5, "time": 5},
+            {"type": "light", "count": 5, "starttile": 6, "time": 5},
+            {"type": "medium", "count": 1, "starttile": 7, "time": 5},
+            {"type": "light", "count": 5, "starttile": 8, "time": 5},
+            {"type": "medium", "count": 1, "starttile": 9, "time": 5},
+            {"type": "heavy", "count": 2, "starttile": 9, "time": 30},
+            {"type": "medium", "count": 4, "starttile": 8, "time": 5},
+            {"type": "light", "count": 8, "starttile": 7, "time": 5},
+            {"type": "heavy", "count": 2, "starttile": 6, "time": 5},
+            {"type": "medium", "count": 4, "starttile": 5, "time": 5},
+            {"type": "light", "count": 8, "starttile": 0, "time": 5},
+            {"type": "heavy", "count": 2, "starttile": 1, "time": 5},
+            {"type": "medium", "count": 4, "starttile": 2, "time": 5},
+            {"type": "light", "count": 8, "starttile": 3, "time": 5},
+            {"type": "heavy", "count": 2, "starttile": 4, "time": 5},
+            {"type": "heavy", "count": 5, "starttile": 9, "time": 40},
+            {"type": "heavy", "count": 5, "starttile": 8, "time": 5},
+            {"type": "heavy", "count": 5, "starttile": 7, "time": 5},
+            {"type": "heavy", "count": 5, "starttile": 6, "time": 5},
+            {"type": "heavy", "count": 5, "starttile": 5, "time": 5},
+            {"type": "heavy", "count": 5, "starttile": 0, "time": 5},
+            {"type": "heavy", "count": 5, "starttile": 1, "time": 5},
+            {"type": "heavy", "count": 5, "starttile": 2, "time": 5},
+            {"type": "heavy", "count": 5, "starttile": 3, "time": 5},
+            {"type": "heavy", "count": 5, "starttile": 4, "time": 5}
+        ]
     }
 ]

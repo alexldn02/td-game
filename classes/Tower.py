@@ -234,7 +234,7 @@ class Tower(GridTile):
             self.surface.blit(self.selected_square, (self.pos[0]*50, self.pos[1]*50))
         #Draws transparent square on top if tile is hovered over
         elif tuple(mouse_tile) == self.pos:
-            self.surface.blit(self.hover_square, (self.pos[0]*50 + 435, self.pos[1]*50 + 115))
+            self.surface.blit(self.hover_square, (self.pos[0]*50, self.pos[1]*50))
 
         nearby_enemies = []
         for enemy in enemies:
