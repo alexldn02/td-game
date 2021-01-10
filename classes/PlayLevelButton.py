@@ -4,24 +4,13 @@ from .Button import Button
 class PlayLevelButton(Button):
 
     def __init__(self, surface, pos, level, unlocked, stars):
-        
-        self.surface = surface
-
         self.level = level
 
         self.unlocked = unlocked
 
         self.bounds = [[pos[0], pos[0] + 135], [pos[1], pos[1] + 160]]
 
-        size = (self.bounds[0][1] - self.bounds[0][0], self.bounds[1][1] - self.bounds[1][0])
-
-        self.hover_rect = pygame.Surface(size)
-        self.hover_rect.set_alpha(32)
-        self.hover_rect.fill((255,255,255))
-
-        self.disabled_rect = pygame.Surface(size)
-        self.disabled_rect.set_alpha(64)
-        self.disabled_rect.fill((0,0,0))
+        super().__init__(surface, "")
 
         self.sprite = pygame.image.load("./assets/level" + str(stars) + "stars.png")
 

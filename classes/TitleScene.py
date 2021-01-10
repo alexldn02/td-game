@@ -31,6 +31,7 @@ class TitleScene(Scene):
 
         if self.event.type == pygame.MOUSEMOTION:
 
+            #Updates mouse_pos every time mouse moves
             self.mouse_pos = pygame.mouse.get_pos()
 
         if self.event.type == pygame.MOUSEBUTTONUP:

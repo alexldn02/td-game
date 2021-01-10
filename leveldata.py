@@ -1,4 +1,5 @@
 #This array contains data about how each level is defined
+#It is stored externally to reduce clutter
 level_data = [
     {
         "levelno": 1,

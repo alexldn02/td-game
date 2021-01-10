@@ -10,18 +10,17 @@ class Tower(GridTile):
         #Calls GridTile constructor
         super().__init__(surface, type, pos)
 
+        #Transparent, white, square shaped Surface object that is blitted on top of the sprite to indicate it is selected
         self.selected_square = pygame.Surface((50, 50))
         self.selected_square.set_alpha(64)
         self.selected_square.fill((255,255,255))
 
         self.attack_wait_time = 0
         self.firing = False
-
         self.agro = False
         self.target = None
 
         self.level = 1
-
         self.upgrade_cost = 50
 
         self.font = pygame.font.Font("./assets/font.ttf", 16)
@@ -84,18 +83,24 @@ class Tower(GridTile):
         #Selects only the enemy object, discarding its distance from the tower
         nearest_enemy = enemies[0][0]
 
+        #If the tower is not targetting an enemy, it targets the nearest
         if not self.target:
             self.target = nearest_enemy
+        #Otherwise, if the targetted enemy is dead, the tower stops targetting it
         elif not self.target.alive:
             self.target = None
             self.firing = False
 
+        #self.firing determines whether the laser beam should be drawn in a frame
+
         if self.target:
             self.attack_wait_time += 1
             
+            #Means that the laser beam is only displayed for 1/12 of a second
             if self.attack_wait_time == 5:
                 self.firing = False
-                
+            
+            #Every self.fire_rate seconds the tower damages the targetted enemy
             if self.attack_wait_time >= math.floor(60 * self.fire_rate):
                 self.target.health -= self.damage
                 self.firing = True
@@ -105,6 +110,7 @@ class Tower(GridTile):
     def splash_attack(self, enemies):
         self.attack_wait_time += 1
 
+        #Every self.fire_rate seconds the tower damages the nearby enemies
         if self.attack_wait_time >= math.floor(60 * self.fire_rate):
             for enemy in enemies:
                 enemy[0].health -= self.damage
@@ -117,18 +123,24 @@ class Tower(GridTile):
         #Selects only the enemy object, discarding its distance from the tower
         nearest_enemy = enemies[0][0]
 
+        #If the tower is not targetting an enemy, it targets the nearest
         if not self.target:
             self.target = nearest_enemy
+        #Otherwise, if the targetted enemy is dead, the tower stops targetting it
         elif not self.target.alive:
             self.target = None
             self.firing = False
+        
+        #self.firing determines whether the laser beam should be drawn in a frame
 
         if self.target:
             self.attack_wait_time += 1
             
+            #Means that the laser beam is only displayed for 1/30 of a second
             if self.attack_wait_time == 2:
                 self.firing = False
-                
+
+            #Every self.fire_rate seconds the tower damages the targetted enemy 
             if self.attack_wait_time >= math.floor(60 * self.fire_rate):
                 self.target.health -= self.damage
                 self.firing = True
@@ -141,31 +153,43 @@ class Tower(GridTile):
 
         nearest_on_fire = True
         i = 0
+
+        #This loop is so that the tower sets as many enemies on fire as possible instead of just targetting the closest
         while nearest_on_fire:
+            #Moves through the enemies from closest to furthest
             if i < len(enemies):
                 #Selects only the enemy object, discarding its distance from the tower
                 nearest_enemy = enemies[i][0]
                 i += 1
                 
+                #Loop ends when an enemy that isn't on fire is found
                 if not nearest_enemy.fire_damage:
                     nearest_on_fire = False
+            #If all enemies within radius are on fire
             else:
+                #Tower just targets the nearest enemy
                 nearest_enemy = enemies[0][0]
                 nearest_on_fire = False
 
+        #If the tower is not targetting an enemy, it targets the nearest
         if not self.target:
             self.target = nearest_enemy
+        #Otherwise, if the targetted enemy is dead, the tower stops targetting it
         elif not self.target.alive:
             self.target = None
             self.firing = False
+
+        #self.firing determines whether the laser beam should be drawn in a frame
                 
         if self.target:
             self.attack_wait_time += 1
 
+            #Means that the laser beam is only displayed for 1/3 of a second
             if self.attack_wait_time == 20:
                 self.firing = False
                 self.target = None
 
+            #Every self.fire_rate seconds the tower damages and sets on fire the targetted enemy
             if self.attack_wait_time >= math.floor(60 * self.fire_rate):
                 self.target.health -= self.damage
                 self.target.fire_damage = self.fire_damage
@@ -268,8 +292,11 @@ class Tower(GridTile):
 
 
     def update_attack_anim(self):
+        #Position in pixels of middle of the tower, where beam will be fired from
         middle_pos = (self.pos[0]*50 + 25, self.pos[1]*50 + 25)
+
         if self.firing and self.target:
+            #Different towers' beams have different colours and line weights
             if self.type == "basic":
                 pygame.draw.line(self.surface, (255,255,255), middle_pos, tuple(self.target.current_pos), 2)
             elif self.type == "sniper":
@@ -322,7 +349,10 @@ class Tower(GridTile):
             surface.set_alpha(192 - 192 * math.sin(self.attack_wait_time/90 * 0.5*math.pi))
 
             #White circle is drawn onto the Surface
-            pygame.draw.circle(surface, (255,255,255), (max_radius - x_cutoff_left, max_radius - y_cutoff_top), radius)
+            try:
+                pygame.draw.circle(surface, (255,255,255), (max_radius - x_cutoff_left, max_radius - y_cutoff_top), radius)
+            except:
+                pass
 
             #Surface object is blitted to the grid surface
             self.surface.blit(surface, surface_pos)

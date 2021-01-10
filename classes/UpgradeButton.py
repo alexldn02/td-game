@@ -3,24 +3,14 @@ from .Button import Button
 
 class UpgradeButton(Button):
     def __init__(self, surface):
-        self.surface = surface
-
-        self.stats_font = pygame.font.Font("./assets/font.ttf", 16)
-        self.cost_font = pygame.font.Font("./assets/font.ttf", 24)
-
         self.bounds = [[35, 235], [635, 745]]
 
         self.sprite = pygame.image.load("./assets/upgradetowerbtn.png")
 
-        size = (self.bounds[0][1] - self.bounds[0][0], self.bounds[1][1] - self.bounds[1][0])
-
-        self.hover_rect = pygame.Surface(size)
-        self.hover_rect.set_alpha(32)
-        self.hover_rect.fill((255,255,255))
-
-        self.disabled_rect = pygame.Surface(size)
-        self.disabled_rect.set_alpha(64)
-        self.disabled_rect.fill((0,0,0))
+        super().__init__(surface, "")
+        
+        self.stats_font = pygame.font.Font("./assets/font.ttf", 16)
+        self.cost_font = pygame.font.Font("./assets/font.ttf", 24)
 
         self.money_icon = pygame.image.load("./assets/iconmoney.png")
         self.damage_icon = pygame.image.load("./assets/icondamage.png")

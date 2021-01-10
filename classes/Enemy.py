@@ -55,6 +55,7 @@ class Enemy:
 
         self.to_reward = False
 
+        #Initial pos is a random point within the start tile
         self.current_pos = [self.current_tile[0]*50 + random.randint(0, 50), self.current_tile[1]*50 + random.randint(0, 50)]
         self.dest_pos = ()
 

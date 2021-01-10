@@ -9,6 +9,7 @@ class GridTile:
 
         self.pos = pos
 
+        #Transparent, white, square shaped Surface object that is blitted on top of the sprite to indicate it is hovered over
         self.hover_square = pygame.Surface((50, 50))
         self.hover_square.set_alpha(32)
         self.hover_square.fill((255,255,255))

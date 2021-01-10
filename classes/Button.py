@@ -9,10 +9,17 @@ class Button:
 
         size = (self.bounds[0][1] - self.bounds[0][0], self.bounds[1][1] - self.bounds[1][0])
 
+        #Transparent, white, square shaped Surface object that is blitted on top of the sprite to indicate it is hovered over
         self.hover_rect = pygame.Surface(size)
         self.hover_rect.set_alpha(32)
         self.hover_rect.fill((255,255,255))
 
+        #Transparent, white, square shaped Surface object that is blitted on top of the sprite to indicate it is selected
+        self.selected_rect = pygame.Surface(size)
+        self.selected_rect.set_alpha(64)
+        self.selected_rect.fill((255,255,255))
+
+        #Transparent, black, square shaped Surface object that is blitted on top of the sprite to indicate it is disabled
         self.disabled_rect = pygame.Surface(size)
         self.disabled_rect.set_alpha(64)
         self.disabled_rect.fill((0,0,0))

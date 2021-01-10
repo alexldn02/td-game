@@ -1,6 +1,6 @@
 # td-game
 Tower defense game for CS project
 
-Run game.py to play
+Run game.pyw to play
 
 Pygame must be installed

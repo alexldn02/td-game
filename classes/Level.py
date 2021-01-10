@@ -496,6 +496,7 @@ class Level(Scene):
         if won:
             star = pygame.image.load("./assets/star.png")
 
+            #The amount of health left after the level is won determines the number of stars received
             if self.health == 100:
                 stars = 3
                 self.game["display"].blit(star, (700, 455))
@@ -510,9 +511,11 @@ class Level(Scene):
             save_file = open("./save.data", "r")
             save_data = save_file.readlines()
 
+            #If this level is what the player was previously up to, the next level is unlocked
             if int(save_data[0]) == self.level_no:
                 save_data[0] = str(int(save_data[0]) + 1) + "\n"
 
+            #Updates star count if the previous has been topped
             if stars > int(save_data[self.level_no]):
                 save_data[self.level_no] = str(stars) + "\n"
 

@@ -30,8 +30,12 @@ class LevelSelectScene(Scene):
 
         self.back_btn = Button(self.game["display"], "back")
 
+        #List holds all buttons
         self.play_level_btns = []
+
         level_no = 0
+
+        #For loops to create all 20 play level buttons
         for row in range(0, 4):
             for column in range(0, 5):
                 level_no += 1
@@ -62,14 +66,17 @@ class LevelSelectScene(Scene):
             
             if self.event.type == pygame.MOUSEMOTION:
 
+                #Updates mouse_pos every time mouse moves
                 self.mouse_pos = pygame.mouse.get_pos()
 
             if self.event.type == pygame.MOUSEBUTTONUP:
                 
+                #If player clicks nack button
                 if self.back_btn.within_bounds(self.mouse_pos):
                     self.stopped = True
                 else:
                     for btn in self.play_level_btns:
+                        #If player clicks a play level button and it is unlocked
                         if btn.within_bounds(self.mouse_pos) and btn.unlocked:
                             self.levels[btn.level-1].start()
                             self.start()

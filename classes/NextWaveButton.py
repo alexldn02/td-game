@@ -4,24 +4,11 @@ from .Button import Button
 class NextWaveButton(Button):
 
     def __init__(self, surface, type):
-        self.surface = surface
-
-        self.time_left_font = pygame.font.Font("./assets/font.ttf", 24)
-        self.enemy_count_font = pygame.font.Font("./assets/font.ttf", 24)
-
-        self.set_type(type)
-
         self.bounds = [[35, 345], [775, 925]]
 
-        size = (self.bounds[0][1] - self.bounds[0][0], self.bounds[1][1] - self.bounds[1][0])
+        super().__init__(surface, type)
 
-        self.hover_rect = pygame.Surface(size)
-        self.hover_rect.set_alpha(32)
-        self.hover_rect.fill((255,255,255))
-
-        self.disabled_rect = pygame.Surface(size)
-        self.disabled_rect.set_alpha(64)
-        self.disabled_rect.fill((0,0,0))
+        self.font = pygame.font.Font("./assets/font.ttf", 24)
 
 
     def set_type(self, type):
@@ -48,11 +35,11 @@ class NextWaveButton(Button):
         if self.type != "none":
 
             if not time_left == -1:
-                time_left_text = self.time_left_font.render(str(time_left), True, (115,113,102))
+                time_left_text = self.font.render(str(time_left), True, (115,113,102))
 
                 self.surface.blit(time_left_text, (94, 840))
 
-            enemy_count_text = self.enemy_count_font.render(str(count), True, (0,0,0))
+            enemy_count_text = self.font.render(str(count), True, (0,0,0))
 
             if len(str(count)) == 1:
                 self.surface.blit(enemy_count_text, (265, 875))
